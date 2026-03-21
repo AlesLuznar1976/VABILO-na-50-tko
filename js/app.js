@@ -1,0 +1,198 @@
+/* ==========================================
+   APP.JS — Navigacija, countdown, konstante
+   ========================================== */
+
+// ===== KONFIGURACIJSKE KONSTANTE =====
+const CONFIG = {
+  // POMEMBNO: Zamenjaj z URL-jem svojega Google Apps Script deployja
+  APPS_SCRIPT_URL: 'YOUR_APPS_SCRIPT_URL_HERE',
+
+  // Datum zabave
+  PARTY_DATE: new Date('2026-05-16T18:00:00+02:00'),
+
+  // Stanje aplikacije
+  isRsvpCompleted: false,
+};
+
+// ===== NAVIGACIJA =====
+(function initNav() {
+  const nav = document.getElementById('mainNav');
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+
+  // Scroll shadow
+  window.addEventListener('scroll', function () {
+    nav.classList.toggle('nav--scrolled', window.scrollY > 20);
+  });
+
+  // Mobile toggle
+  toggle.addEventListener('click', function () {
+    toggle.classList.toggle('active');
+    links.classList.toggle('open');
+  });
+
+  // Zapri meni ob kliku na link
+  links.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      toggle.classList.remove('active');
+      links.classList.remove('open');
+    });
+  });
+
+  // Active link ob scrollu
+  var sections = document.querySelectorAll('.section');
+  var navAnchors = links.querySelectorAll('a');
+
+  window.addEventListener('scroll', function () {
+    var scrollPos = window.scrollY + 120;
+    sections.forEach(function (section) {
+      if (section.offsetTop <= scrollPos && section.offsetTop + section.offsetHeight > scrollPos) {
+        navAnchors.forEach(function (a) { a.classList.remove('active'); });
+        var active = links.querySelector('a[href="#' + section.id + '"]');
+        if (active) active.classList.add('active');
+      }
+    });
+  });
+})();
+
+// ===== COUNTDOWN =====
+(function initCountdown() {
+  function update() {
+    var now = new Date();
+    var diff = CONFIG.PARTY_DATE - now;
+
+    if (diff <= 0) {
+      document.getElementById('countDays').textContent = '0';
+      document.getElementById('countHours').textContent = '0';
+      document.getElementById('countMinutes').textContent = '0';
+      document.getElementById('countSeconds').textContent = '0';
+      return;
+    }
+
+    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById('countDays').textContent = days;
+    document.getElementById('countHours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('countMinutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('countSeconds').textContent = String(seconds).padStart(2, '0');
+  }
+
+  update();
+  setInterval(update, 1000);
+})();
+
+// ===== SCROLL REVEAL =====
+(function initReveal() {
+  var reveals = document.querySelectorAll('.section__header, .detail-card, .rsvp-form, .music-form');
+  reveals.forEach(function (el) { el.classList.add('reveal'); });
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  reveals.forEach(function (el) { observer.observe(el); });
+})();
+
+// ===== TOAST NOTIFICATIONS =====
+function showToast(message, type) {
+  type = type || 'success';
+
+  // Odstrani obstoječi toast
+  var existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+
+  var toast = document.createElement('div');
+  toast.className = 'toast toast--' + type;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  // Prikaži
+  requestAnimationFrame(function () {
+    toast.classList.add('show');
+  });
+
+  // Skrij po 4 sekundah
+  setTimeout(function () {
+    toast.classList.remove('show');
+    setTimeout(function () { toast.remove(); }, 400);
+  }, 4000);
+}
+
+// ===== ODKLEPANJE SEKCIJ =====
+function unlockSections() {
+  CONFIG.isRsvpCompleted = true;
+
+  // Odkleni navigacijo
+  var navSeating = document.getElementById('navSeating');
+  var navMusic = document.getElementById('navMusic');
+  navSeating.classList.add('nav__unlocked');
+  navMusic.classList.add('nav__unlocked');
+
+  // Skrij zaklenjene overlayre
+  var seatingLocked = document.getElementById('seatingLocked');
+  var musicLocked = document.getElementById('musicLocked');
+  seatingLocked.hidden = true;
+  musicLocked.hidden = true;
+
+  // Prikaži vsebino
+  document.getElementById('seatingLegend').hidden = false;
+  document.getElementById('seatingChart').hidden = false;
+  document.getElementById('musicForm').hidden = false;
+
+  // Inicializiraj sedežni red
+  if (typeof initSeatingChart === 'function') {
+    initSeatingChart();
+  }
+
+  // Inicializiraj glasbo
+  if (typeof initMusicForm === 'function') {
+    initMusicForm();
+  }
+}
+
+// ===== API HELPER =====
+function apiPost(data) {
+  if (CONFIG.APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    // Demo način — simuliraj uspeh
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        resolve({ status: 'ok', message: 'Demo način — podatki niso bili poslani.' });
+      }, 1000);
+    });
+  }
+
+  return fetch(CONFIG.APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'text/plain' }
+  }).then(function (r) { return r.json(); });
+}
+
+function apiGet(params) {
+  if (CONFIG.APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    // Demo način
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        resolve({ status: 'ok', seats: [] });
+      }, 500);
+    });
+  }
+
+  var url = CONFIG.APPS_SCRIPT_URL + '?' + new URLSearchParams(params).toString();
+  return fetch(url).then(function (r) { return r.json(); });
+}
+
+// ===== PREVERI OBSTOJEČI RSVP IZ SESSIONSTORAGE =====
+(function checkExistingRsvp() {
+  var guestName = sessionStorage.getItem('guestName');
+  if (guestName) {
+    unlockSections();
+  }
+})();
