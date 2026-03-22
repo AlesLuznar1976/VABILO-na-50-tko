@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(gh auth:*)",
+      "Bash(where gh:*)",
+      "Bash(git config:*)",
+      "Bash(gh api:*)",
+      "WebSearch",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "WebFetch(domain:unsplash.com)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "Bash(curl -L -o \"A:/VABILA ZA ROJSTNI DAN/img/hero-jasna.jpg\" \"https://images.unsplash.com/photo-1520939817895-060bdaf4fe1b?w=1920&q=80&auto=format\")",
+      "WebFetch(domain:kranjska-gora.si)",
+      "Bash(curl -L -o \"A:/VABILA ZA ROJSTNI DAN/img/hero-jasna.jpg\" \"https://kranjska-gora.si/wp-content/uploads/2020/08/F010464-jezero_jasna_tomo_jesenicnik_78-photo-l-1-1920x1281.jpg\")",
+      "Bash(curl -L -o \"A:/VABILA ZA ROJSTNI DAN/img/jasna-2.jpg\" \"https://kranjska-gora.si/wp-content/uploads/2020/08/Jasna-Lake-photo-Ales-Krivec-2-scaled.jpg\")"
+    ]
+  }
+}
