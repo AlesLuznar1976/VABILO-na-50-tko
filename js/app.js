@@ -177,43 +177,6 @@ function resetPage() {
   }, 400);
 }
 
-// ===== AVTOMATSKI RESET =====
-// Po zadnjem koraku prikaže zahvalno sporočilo in po 8s resetira
-function autoResetPage() {
-  // Prikaži celozaslonsko zahvalno sporočilo
-  var overlay = document.createElement('div');
-  overlay.className = 'thankyou-overlay';
-  overlay.innerHTML =
-    '<div class="thankyou-content">' +
-      '<div class="thankyou-icon">🎉</div>' +
-      '<h2 class="thankyou-title">Hvala!</h2>' +
-      '<p class="thankyou-text">Vsi podatki so shranjeni.<br>Veselimo se, da prideš!</p>' +
-      '<div class="thankyou-countdown">' +
-        '<span>Stran se ponastavi čez </span>' +
-        '<span class="thankyou-seconds" id="resetCountdown">8</span>' +
-        '<span> sekund</span>' +
-      '</div>' +
-      '<button class="btn btn--primary" onclick="resetPage()" style="margin-top:1.5rem;">Ponastavi zdaj</button>' +
-    '</div>';
-  document.body.appendChild(overlay);
-
-  // Animiraj vstop
-  requestAnimationFrame(function () {
-    overlay.classList.add('show');
-  });
-
-  // Odštevanje
-  var sec = 8;
-  var countEl = document.getElementById('resetCountdown');
-  var interval = setInterval(function () {
-    sec--;
-    if (countEl) countEl.textContent = sec;
-    if (sec <= 0) {
-      clearInterval(interval);
-      resetPage();
-    }
-  }, 1000);
-}
 
 // ===== API HELPER =====
 function apiPost(data) {

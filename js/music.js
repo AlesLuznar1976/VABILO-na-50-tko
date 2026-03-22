@@ -84,11 +84,6 @@ function initMusicForm() {
           form.hidden = true;
           successEl.hidden = false;
           showToast('Glasbene želje shranjene!', 'success');
-
-          // Avtomatski reset — počakaj in ponastavi
-          if (typeof autoResetPage === 'function') {
-            autoResetPage();
-          }
         } else {
           showToast(result.message || 'Prišlo je do napake.', 'error');
           submitBtn.disabled = false;
