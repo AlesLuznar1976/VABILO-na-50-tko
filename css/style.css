@@ -845,19 +845,19 @@ input, select, textarea { font: inherit; }
 }
 
 .legend-dot--empty {
-  background: var(--color-lime);
-  border-color: #8BC34A;
+  background: #4CAF50;
+  border-color: #388E3C;
 }
 
 .legend-dot--taken {
-  background: var(--color-text-light);
-  border-color: #5A4A6B;
+  background: #9E9E9E;
+  border-color: #757575;
 }
 
 .legend-dot--mine {
-  background: var(--color-pink);
-  border-color: var(--color-coral);
-  box-shadow: 0 0 8px rgba(255, 107, 157, 0.5);
+  background: #D4AF37;
+  border-color: #B8860B;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
 }
 
 .seating-chart {
@@ -877,8 +877,8 @@ input, select, textarea { font: inherit; }
 
 /* SVG seat styles */
 .seat-empty {
-  fill: #5B8FA8;
-  stroke: #3D7A96;
+  fill: #4CAF50;
+  stroke: #388E3C;
   stroke-width: 2;
   cursor: pointer;
   transition: fill 0.2s, transform 0.2s;
@@ -892,11 +892,11 @@ input, select, textarea { font: inherit; }
 }
 
 .seat-taken {
-  fill: #3D5A80;
-  stroke: #2C4460;
+  fill: #9E9E9E;
+  stroke: #757575;
   stroke-width: 2;
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .seat-mine {
