@@ -26,10 +26,10 @@ var currentPickIndex = 0; // Katera oseba trenutno izbira sedež
 
 function getPartyNames() {
   try {
-    var stored = sessionStorage.getItem('partyNames');
+    var stored = localStorage.getItem('partyNames');
     if (stored) return JSON.parse(stored);
   } catch (e) {}
-  var guestName = sessionStorage.getItem('guestName') || 'Gost';
+  var guestName = localStorage.getItem('guestName') || 'Gost';
   return [guestName];
 }
 
@@ -143,7 +143,7 @@ function renderChart(svg) {
   svg.appendChild(danceGroup);
 
   // Riši mize
-  var guestName = sessionStorage.getItem('guestName') || '';
+  var guestName = localStorage.getItem('guestName') || '';
 
   TABLES.forEach(function (table) {
     var group = createSvgElement('g');

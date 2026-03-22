@@ -789,6 +789,25 @@ input, select, textarea { font: inherit; }
   flex-wrap: wrap;
 }
 
+.btn-reset {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+  background: none;
+  border: 1px solid rgba(10, 22, 40, 0.15);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-reset:hover {
+  color: #c0392b;
+  border-color: #c0392b;
+  background: rgba(192, 57, 43, 0.05);
+}
+
 /* ==========================================
    LOCKED OVERLAY
    ========================================== */

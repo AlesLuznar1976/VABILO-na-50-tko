@@ -102,24 +102,33 @@
       .then(function (result) {
         if (result.status === 'ok') {
           var fullName = data.ime + ' ' + data.priimek;
-          sessionStorage.setItem('guestName', fullName);
-          sessionStorage.setItem('stOseb', data.stOseb);
+          localStorage.setItem('guestName', fullName);
+          localStorage.setItem('stOseb', data.stOseb);
 
           // Shrani imena vseh oseb v skupini (glavna oseba + spremljevalci)
           var partyNames = [fullName];
           if (spremljevalci.length > 0) {
             partyNames = partyNames.concat(spremljevalci);
           }
-          sessionStorage.setItem('partyNames', JSON.stringify(partyNames));
+          localStorage.setItem('partyNames', JSON.stringify(partyNames));
 
           form.hidden = true;
           successEl.hidden = false;
+
+          // Prikaži ime v success sporočilu
+          var nameEl = document.getElementById('rsvpSuccessName');
+          if (nameEl) {
+            nameEl.textContent = 'Potrjeno za: ' + fullName + (spremljevalci.length > 0 ? ' + ' + spremljevalci.join(', ') : '');
+            nameEl.style.fontWeight = '700';
+            nameEl.style.color = '#D4AF37';
+            nameEl.style.fontSize = '1.1rem';
+          }
 
           if (typeof celebrateConfetti === 'function') {
             celebrateConfetti();
           }
 
-          showToast('Hvala za potrditev!', 'success');
+          showToast('Hvala za potrditev, ' + fullName + '!', 'success');
 
           if (data.udelezba === 'da') {
             unlockSections();

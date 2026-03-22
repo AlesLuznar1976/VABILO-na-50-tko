@@ -155,6 +155,28 @@ function unlockSections() {
   if (typeof initMusicForm === 'function') {
     initMusicForm();
   }
+
+  // Pokaži RSVP uspeh namesto obrazca (če se vračamo)
+  var rsvpForm = document.getElementById('rsvpForm');
+  var rsvpSuccess = document.getElementById('rsvpSuccess');
+  if (rsvpForm && rsvpSuccess) {
+    rsvpForm.hidden = true;
+    rsvpSuccess.hidden = false;
+  }
+}
+
+// ===== PONASTAVI STRAN =====
+function resetPage() {
+  // Počisti localStorage
+  localStorage.removeItem('guestName');
+  localStorage.removeItem('stOseb');
+  localStorage.removeItem('partyNames');
+
+  // Osveži stran — gre na vrh
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(function () {
+    location.reload();
+  }, 400);
 }
 
 // ===== API HELPER =====
@@ -189,10 +211,22 @@ function apiGet(params) {
   return fetch(url).then(function (r) { return r.json(); });
 }
 
-// ===== PREVERI OBSTOJEČI RSVP IZ SESSIONSTORAGE =====
+// ===== PREVERI OBSTOJEČI RSVP IZ LOCALSTORAGE =====
 (function checkExistingRsvp() {
-  var guestName = sessionStorage.getItem('guestName');
+  var guestName = localStorage.getItem('guestName');
   if (guestName) {
     unlockSections();
+
+    // Prikaži shranjeno ime
+    var nameEl = document.getElementById('rsvpSuccessName');
+    if (nameEl) {
+      var partyNames = [];
+      try { partyNames = JSON.parse(localStorage.getItem('partyNames') || '[]'); } catch(e) {}
+      var others = partyNames.slice(1);
+      nameEl.textContent = 'Potrjeno za: ' + guestName + (others.length > 0 ? ' + ' + others.join(', ') : '');
+      nameEl.style.fontWeight = '700';
+      nameEl.style.color = '#D4AF37';
+      nameEl.style.fontSize = '1.1rem';
+    }
   }
 })();
