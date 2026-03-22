@@ -7,7 +7,7 @@ var GENRES = [
   { id: '90-00', label: '💿 90-00' },
   { id: 'jugo', label: '🎶 Jugo zabavna' },
   { id: 'narodno', label: '🪗 Narodno zabavna' },
-  { id: 'slovenska', label: '🇸🇮 Slovenska' },
+  { id: 'slovenska', label: '<img src="https://flagcdn.com/24x18/si.png" alt="🇸🇮" style="vertical-align:middle;margin-right:4px"> Slovenska', html: true },
   { id: 'plesna', label: '💃 Plesna' },
   { id: 'moderna', label: '🎧 Moderna' },
   { id: 'rock', label: '🎸 Rock' },
@@ -20,7 +20,7 @@ function initMusicForm() {
   // Generiraj žanre
   if (genreGrid.children.length === 0) {
     GENRES.forEach(function (genre) {
-      genreGrid.appendChild(createCheckbox('genre', genre.id, genre.label));
+      genreGrid.appendChild(createCheckbox('genre', genre.id, genre.label, genre.html));
     });
   }
 
@@ -77,7 +77,7 @@ function initMusicForm() {
   });
 }
 
-function createCheckbox(type, id, label) {
+function createCheckbox(type, id, label, isHtml) {
   var wrapper = document.createElement('label');
   wrapper.className = 'checkbox-item';
 
@@ -91,7 +91,11 @@ function createCheckbox(type, id, label) {
 
   var text = document.createElement('span');
   text.className = 'checkbox-text';
-  text.textContent = label;
+  if (isHtml) {
+    text.innerHTML = label;
+  } else {
+    text.textContent = label;
+  }
 
   wrapper.appendChild(input);
   wrapper.appendChild(custom);
