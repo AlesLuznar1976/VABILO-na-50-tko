@@ -68,7 +68,7 @@ function renderChart(svg) {
   // Naslov
   var title = createSvgElement('text', {
     x: '500', y: '50', 'text-anchor': 'middle', 'font-family': "'Baloo 2', cursive",
-    'font-size': '22', 'font-weight': '700', fill: '#2D1B4E'
+    'font-size': '22', 'font-weight': '700', fill: '#0A1628'
   });
   title.textContent = 'Izberi svoj sedež';
   svg.appendChild(title);
@@ -77,12 +77,12 @@ function renderChart(svg) {
   var djGroup = createSvgElement('g');
   var djRect = createSvgElement('rect', {
     x: '830', y: '260', width: '140', height: '60', rx: '10',
-    fill: '#7B2FBE', opacity: '0.15', stroke: '#7B2FBE', 'stroke-width': '2', 'stroke-dasharray': '5,5'
+    fill: '#0A1628', opacity: '0.15', stroke: '#D4AF37', 'stroke-width': '2', 'stroke-dasharray': '5,5'
   });
   djGroup.appendChild(djRect);
   var djText = createSvgElement('text', {
     x: '900', y: '296', 'text-anchor': 'middle', 'font-family': "'DM Sans', sans-serif",
-    'font-size': '13', 'font-weight': '600', fill: '#7B2FBE'
+    'font-size': '13', 'font-weight': '600', fill: '#D4AF37'
   });
   djText.textContent = '🎵 DJ';
   djGroup.appendChild(djText);
@@ -92,12 +92,12 @@ function renderChart(svg) {
   var danceGroup = createSvgElement('g');
   var danceRect = createSvgElement('rect', {
     x: '830', y: '400', width: '140', height: '140', rx: '15',
-    fill: '#FFC947', opacity: '0.12', stroke: '#FFC947', 'stroke-width': '2', 'stroke-dasharray': '8,4'
+    fill: '#D4AF37', opacity: '0.08', stroke: '#D4AF37', 'stroke-width': '2', 'stroke-dasharray': '8,4'
   });
   danceGroup.appendChild(danceRect);
   var danceText = createSvgElement('text', {
     x: '900', y: '476', 'text-anchor': 'middle', 'font-family': "'DM Sans', sans-serif",
-    'font-size': '13', 'font-weight': '600', fill: '#B8941A'
+    'font-size': '13', 'font-weight': '600', fill: '#8B7320'
   });
   danceText.textContent = '💃 Plesišče';
   danceGroup.appendChild(danceText);

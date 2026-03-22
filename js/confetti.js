@@ -1,49 +1,47 @@
 /* ==========================================
    CONFETTI.JS — Party animacije
+   Navy + Gold tema
    ========================================== */
 
 (function initConfetti() {
-  // Počakaj da se canvas-confetti naloži
+  var goldColors = ['#D4AF37', '#F0D060', '#C9A84C', '#FFFFFF', '#5B8FA8', '#E8D48B'];
+
   function launchConfetti() {
     if (typeof confetti !== 'function') return;
 
-    // Začetni izbruh
     setTimeout(function () {
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#FF6B9D', '#FFC947', '#17C3B2', '#7B2FBE', '#FF8C42', '#A8E06C']
+        colors: goldColors
       });
     }, 500);
 
-    // Stranski izbruhi
     setTimeout(function () {
       confetti({
         particleCount: 50,
         angle: 60,
         spread: 55,
         origin: { x: 0, y: 0.65 },
-        colors: ['#FF6B9D', '#FFC947', '#17C3B2']
+        colors: ['#D4AF37', '#F0D060', '#FFFFFF']
       });
       confetti({
         particleCount: 50,
         angle: 120,
         spread: 55,
         origin: { x: 1, y: 0.65 },
-        colors: ['#7B2FBE', '#FF8C42', '#A8E06C']
+        colors: ['#C9A84C', '#5B8FA8', '#E8D48B']
       });
     }, 1200);
   }
 
-  // Počakaj na nalaganje
   if (document.readyState === 'complete') {
     launchConfetti();
   } else {
     window.addEventListener('load', launchConfetti);
   }
 
-  // Ponoven konfeti ob kliku na CTA gumb
   var heroBtn = document.querySelector('.btn--hero');
   if (heroBtn) {
     heroBtn.addEventListener('click', function () {
@@ -52,14 +50,13 @@
           particleCount: 40,
           spread: 60,
           origin: { y: 0.8 },
-          colors: ['#FF6B9D', '#FFC947', '#17C3B2']
+          colors: ['#D4AF37', '#F0D060', '#FFFFFF']
         });
       }
     });
   }
 })();
 
-// Eksportirana funkcija za RSVP uspeh
 function celebrateConfetti() {
   if (typeof confetti !== 'function') return;
 
@@ -72,14 +69,14 @@ function celebrateConfetti() {
       angle: 60,
       spread: 55,
       origin: { x: 0, y: 0.7 },
-      colors: ['#FF6B9D', '#FFC947', '#17C3B2', '#7B2FBE']
+      colors: ['#D4AF37', '#F0D060', '#C9A84C', '#FFFFFF']
     });
     confetti({
       particleCount: 4,
       angle: 120,
       spread: 55,
       origin: { x: 1, y: 0.7 },
-      colors: ['#FF6B9D', '#FFC947', '#17C3B2', '#7B2FBE']
+      colors: ['#D4AF37', '#F0D060', '#C9A84C', '#FFFFFF']
     });
 
     if (Date.now() < end) {
