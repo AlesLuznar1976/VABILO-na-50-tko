@@ -39,11 +39,13 @@ function getSeatsNeeded() {
 
 function initSeatingChart() {
   var svg = document.getElementById('seatingSvg');
-  if (!svg || svg.childNodes.length > 0) return;
+  if (!svg) return;
 
+  // Vedno osveži partyNames in resetiraj SVG
   partyNames = getPartyNames();
   selectedSeats = [];
   currentPickIndex = 0;
+  svg.innerHTML = '';
 
   // Naloži zasedene sedeže
   loadOccupiedSeats().then(function () {
@@ -212,8 +214,10 @@ function renderChart(svg) {
 }
 
 function isMyParty(name) {
-  for (var i = 0; i < partyNames.length; i++) {
-    if (partyNames[i] === name) return true;
+  // Vedno preveri svež localStorage
+  var currentNames = getPartyNames();
+  for (var i = 0; i < currentNames.length; i++) {
+    if (currentNames[i] === name) return true;
   }
   return false;
 }
@@ -373,6 +377,9 @@ function confirmAllSeats() {
       var allOk = results.every(function (r) { return r.status === 'ok'; });
 
       if (allOk) {
+        // Osveži partyNames iz localStorage
+        partyNames = getPartyNames();
+
         // Dodaj vse v lokalni seznam
         selectedSeats.forEach(function (s) {
           occupiedSeats.push({ name: s.name, table: s.table, seat: s.seat });
@@ -431,6 +438,9 @@ document.getElementById('seatConfirm').addEventListener('click', function () {
       confirmBtn.textContent = 'Potrdi';
 
       if (result.status === 'ok') {
+        // Osveži partyNames iz localStorage
+        partyNames = getPartyNames();
+
         occupiedSeats.push({
           name: seatData.name,
           table: seatData.table,
