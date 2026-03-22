@@ -3,46 +3,24 @@
    ========================================== */
 
 var GENRES = [
-  { id: 'pop', label: '🎵 Pop' },
+  { id: '80ta', label: '🕺 80-ta' },
+  { id: '90-00', label: '💿 90-00' },
+  { id: 'jugo', label: '🎶 Jugo zabavna' },
+  { id: 'narodno', label: '🪗 Narodno zabavna' },
+  { id: 'slovenska', label: '🇸🇮 Slovenska' },
+  { id: 'plesna', label: '💃 Plesna' },
+  { id: 'moderna', label: '🎧 Moderna' },
   { id: 'rock', label: '🎸 Rock' },
-  { id: 'narodno', label: '🪗 Narodno' },
-  { id: 'electronic', label: '🎧 Electronic' },
-  { id: 'hiphop', label: '🎤 Hip-Hop' },
-  { id: 'jazz', label: '🎷 Jazz' },
-  { id: 'retro', label: '🕺 Retro 80s/90s' },
-  { id: 'latino', label: '💃 Latino' },
-];
-
-var SONGS = [
-  { id: 'song1', label: 'Queen — Bohemian Rhapsody' },
-  { id: 'song2', label: 'ABBA — Dancing Queen' },
-  { id: 'song3', label: 'Avseniki — Na Golici' },
-  { id: 'song4', label: 'Siddharta — Ena' },
-  { id: 'song5', label: 'Magnifico — Hir Aj Kam, Hir Aj Go' },
-  { id: 'song6', label: 'Daft Punk — Get Lucky' },
-  { id: 'song7', label: 'Mark Ronson ft. Bruno Mars — Uptown Funk' },
-  { id: 'song8', label: 'Bee Gees — Stayin\' Alive' },
-  { id: 'song9', label: 'Journey — Don\'t Stop Believin\'' },
-  { id: 'song10', label: 'Shakira — Waka Waka' },
-  { id: 'song11', label: 'Luis Fonsi — Despacito' },
-  { id: 'song12', label: 'Adi Smolar — Gremo mi po svoji poti' },
+  { id: 'balkan', label: '🎺 Balkan' },
 ];
 
 function initMusicForm() {
   var genreGrid = document.getElementById('genreGrid');
-  var songGrid = document.getElementById('songGrid');
 
   // Generiraj žanre
   if (genreGrid.children.length === 0) {
     GENRES.forEach(function (genre) {
       genreGrid.appendChild(createCheckbox('genre', genre.id, genre.label));
-    });
-  }
-
-  // Generiraj pesmi
-  if (songGrid.children.length === 0) {
-    SONGS.forEach(function (song) {
-      songGrid.appendChild(createCheckbox('song', song.id, song.label));
     });
   }
 
@@ -57,11 +35,10 @@ function initMusicForm() {
     e.preventDefault();
 
     var selectedGenres = getCheckedValues('genre');
-    var selectedSongs = getCheckedValues('song');
     var lastnaZelja = document.getElementById('lastnaZelja').value.trim();
 
-    if (selectedGenres.length === 0 && selectedSongs.length === 0 && !lastnaZelja) {
-      showToast('Izberi vsaj en žanr, pesem ali napiši željo.', 'error');
+    if (selectedGenres.length === 0 && !lastnaZelja) {
+      showToast('Izberi vsaj eno zvrst ali napiši željo.', 'error');
       return;
     }
 
@@ -76,7 +53,7 @@ function initMusicForm() {
       action: 'music',
       name: guestName,
       zanri: selectedGenres,
-      pesmi: selectedSongs,
+      pesmi: [],
       lastnaZelja: lastnaZelja
     })
       .then(function (result) {
