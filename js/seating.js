@@ -238,11 +238,11 @@ function getSelectedSeatInfo(tableId, seatNum) {
 
 function truncateName(name) {
   if (!name) return '';
-  var parts = name.split(' ');
+  var parts = name.trim().split(' ');
   if (parts.length > 1) {
-    return parts[0].charAt(0) + '.' + parts[parts.length - 1].charAt(0) + '.';
+    return parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
   }
-  return name.length > 6 ? name.substring(0, 5) + '.' : name;
+  return name;
 }
 
 function onSeatClick(e) {
