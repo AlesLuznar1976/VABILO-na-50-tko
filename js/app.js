@@ -177,6 +177,66 @@ function resetPage() {
   }, 400);
 }
 
+// ===== HERO GUMB — NOVA OSEBA =====
+(function initHeroReset() {
+  var heroBtn = document.getElementById('heroRsvpBtn');
+  if (!heroBtn) return;
+
+  heroBtn.addEventListener('click', function () {
+    // Počisti osebne podatke (sedeži ostanejo na strežniku)
+    localStorage.removeItem('guestName');
+    localStorage.removeItem('stOseb');
+    localStorage.removeItem('partyNames');
+    CONFIG.isRsvpCompleted = false;
+
+    // Ponastavi RSVP obrazec
+    var rsvpForm = document.getElementById('rsvpForm');
+    var rsvpSuccess = document.getElementById('rsvpSuccess');
+    if (rsvpForm) {
+      rsvpForm.hidden = false;
+      rsvpForm.reset();
+    }
+    if (rsvpSuccess) rsvpSuccess.hidden = true;
+
+    // Ponastavi spremljevalce
+    var spremljevalciGroup = document.getElementById('spremljevalciGroup');
+    var spremljevalciList = document.getElementById('spremljevalciList');
+    if (spremljevalciGroup) spremljevalciGroup.hidden = true;
+    if (spremljevalciList) spremljevalciList.innerHTML = '';
+
+    // Zakleni sekcije nazaj
+    var navSeating = document.getElementById('navSeating');
+    var navMusic = document.getElementById('navMusic');
+    if (navSeating) navSeating.classList.remove('nav__unlocked');
+    if (navMusic) navMusic.classList.remove('nav__unlocked');
+
+    var seatingLocked = document.getElementById('seatingLocked');
+    var musicLocked = document.getElementById('musicLocked');
+    if (seatingLocked) seatingLocked.hidden = false;
+    if (musicLocked) musicLocked.hidden = false;
+
+    document.getElementById('seatingLegend').hidden = true;
+    document.getElementById('seatingChart').hidden = true;
+    document.getElementById('musicForm').hidden = true;
+
+    // Ponastavi glasbo
+    var musicForm = document.getElementById('musicForm');
+    var musicSuccess = document.getElementById('musicSuccess');
+    if (musicForm) { musicForm.hidden = true; musicForm.reset && musicForm.reset(); }
+    if (musicSuccess) musicSuccess.hidden = true;
+
+    // Ponastavi submit gumbe
+    var rsvpSubmit = document.getElementById('rsvpSubmit');
+    if (rsvpSubmit) {
+      rsvpSubmit.disabled = false;
+      var btnText = rsvpSubmit.querySelector('.btn__text');
+      var btnSpinner = rsvpSubmit.querySelector('.btn__spinner');
+      if (btnText) btnText.hidden = false;
+      if (btnSpinner) btnSpinner.hidden = true;
+    }
+  });
+})();
+
 
 // ===== API HELPER =====
 function apiPost(data) {
