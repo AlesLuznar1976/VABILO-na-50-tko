@@ -627,6 +627,28 @@ input, select, textarea { font: inherit; }
   min-height: 5rem;
 }
 
+/* Celoten stolpec */
+.form-group--full {
+  grid-column: 1 / -1;
+}
+
+/* Spremljevalci */
+.spremljevalci-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.spremljevalec-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.spremljevalec-row .form-input {
+  flex: 1;
+}
+
 /* Radio buttons */
 .form-group--radio {
   margin-top: 1.5rem;
@@ -905,11 +927,15 @@ input, select, textarea { font: inherit; }
   position: fixed;
   inset: 0;
   z-index: 2000;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 1rem;
   animation: fadeIn 0.2s ease;
+}
+
+.modal.is-visible {
+  display: flex;
 }
 
 .modal__backdrop {

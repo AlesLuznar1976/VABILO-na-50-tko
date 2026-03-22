@@ -188,7 +188,7 @@ function onSeatClick(e) {
   var modal = document.getElementById('seatModal');
   var modalText = document.getElementById('seatModalText');
   modalText.textContent = 'Želiš sedeti na Mizi ' + tableId + ', Sedež ' + seatNum + '?';
-  modal.hidden = false;
+  modal.classList.add('is-visible');
 }
 
 // Modal gumbi
@@ -209,7 +209,7 @@ document.getElementById('seatConfirm').addEventListener('click', function () {
     seat: selectedSeat.seat
   })
     .then(function (result) {
-      modal.hidden = true;
+      modal.classList.remove('is-visible');
       confirmBtn.disabled = false;
       confirmBtn.textContent = 'Potrdi';
 
@@ -242,7 +242,7 @@ document.getElementById('seatConfirm').addEventListener('click', function () {
       selectedSeat = null;
     })
     .catch(function () {
-      modal.hidden = true;
+      modal.classList.remove('is-visible');
       confirmBtn.disabled = false;
       confirmBtn.textContent = 'Potrdi';
       showToast('Napaka pri rezervaciji. Poskusi znova.', 'error');
@@ -251,13 +251,13 @@ document.getElementById('seatConfirm').addEventListener('click', function () {
 });
 
 document.getElementById('seatCancel').addEventListener('click', function () {
-  document.getElementById('seatModal').hidden = true;
+  document.getElementById('seatModal').classList.remove('is-visible');
   selectedSeat = null;
 });
 
 // Zapri modal ob kliku na backdrop
 document.querySelector('#seatModal .modal__backdrop').addEventListener('click', function () {
-  document.getElementById('seatModal').hidden = true;
+  document.getElementById('seatModal').classList.remove('is-visible');
   selectedSeat = null;
 });
 

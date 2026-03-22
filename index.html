@@ -126,10 +126,6 @@
             <input type="text" id="priimek" name="priimek" class="form-input" required placeholder="Tvoj priimek">
           </div>
           <div class="form-group">
-            <label for="email" class="form-label">Email *</label>
-            <input type="email" id="email" name="email" class="form-input" required placeholder="tvoj@email.com">
-          </div>
-          <div class="form-group">
             <label for="telefon" class="form-label">Telefon</label>
             <input type="tel" id="telefon" name="telefon" class="form-input" placeholder="+386 ...">
           </div>
@@ -139,9 +135,16 @@
               <option value="1">1 oseba</option>
               <option value="2">2 osebi</option>
               <option value="3">3 osebe</option>
+              <option value="4">4 osebe</option>
+              <option value="5">5 oseb</option>
             </select>
           </div>
-          <div class="form-group">
+          <!-- Dinamična polja za imena spremljevalcev -->
+          <div class="form-group form-group--full" id="spremljevalciGroup" hidden>
+            <label class="form-label">Imena spremljevalcev *</label>
+            <div id="spremljevalciList" class="spremljevalci-list"></div>
+          </div>
+          <div class="form-group form-group--full">
             <label for="prehrana" class="form-label">Prehranjevalne zahteve</label>
             <input type="text" id="prehrana" name="prehrana" class="form-input" placeholder="Vegetarijansko, brez glutena...">
           </div>
