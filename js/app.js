@@ -271,7 +271,8 @@ function apiGet(params) {
 }
 
 // ===== PREVERI OBSTOJEČI RSVP IZ LOCALSTORAGE =====
-(function checkExistingRsvp() {
+// Počakaj da se vsi skripti naložijo (seating.js, music.js)
+window.addEventListener('DOMContentLoaded', function () {
   var guestName = localStorage.getItem('guestName');
   if (guestName) {
     unlockSections();
@@ -288,4 +289,4 @@ function apiGet(params) {
       nameEl.style.fontSize = '1.1rem';
     }
   }
-})();
+});
