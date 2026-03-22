@@ -1163,6 +1163,34 @@ input, select, textarea { font: inherit; }
   color: var(--color-purple);
 }
 
+/* ==========================================
+   KONTAKTNI OBRAZEC
+   ========================================== */
+.contact-section {
+  max-width: 40rem;
+  margin: 3rem auto 3rem;
+  background: var(--color-white);
+  padding: 2.5rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(10, 22, 40, 0.06);
+}
+
+.contact-section__title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.contact-section__subtitle {
+  text-align: center;
+  color: var(--color-text-light);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
 .map-container {
   border-radius: var(--radius-xl);
   overflow: hidden;

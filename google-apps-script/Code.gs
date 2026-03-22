@@ -2,7 +2,7 @@
  * Google Apps Script — Backend za rojstnodnevna vabila
  *
  * NAVODILA ZA DEPLOY:
- * 1. Ustvari nov Google Sheet s 3 zavihki: "RSVP", "Seating", "Music"
+ * 1. Ustvari nov Google Sheet s 4 zavihki: "RSVP", "Seating", "Music", "Contact"
  * 2. Odpri Extensions > Apps Script
  * 3. Prilepi to kodo
  * 4. Deploy > New deployment > Web app
@@ -18,7 +18,7 @@ function addHeaders() {
 
   var rsvp = ss.getSheetByName('RSVP');
   if (rsvp.getLastRow() === 0) {
-    rsvp.appendRow(['Časovni žig', 'Ime', 'Priimek', 'Email', 'Telefon', 'Št. oseb', 'Prehrana', 'Udeležba']);
+    rsvp.appendRow(['Časovni žig', 'Ime', 'Priimek', 'Telefon', 'Št. oseb', 'Spremljevalci', 'Prehrana', 'Udeležba']);
   }
 
   var seating = ss.getSheetByName('Seating');
@@ -29,6 +29,11 @@ function addHeaders() {
   var music = ss.getSheetByName('Music');
   if (music.getLastRow() === 0) {
     music.appendRow(['Časovni žig', 'Ime gosta', 'Žanri', 'Pesmi', 'Lastna želja']);
+  }
+
+  var contact = ss.getSheetByName('Contact');
+  if (contact.getLastRow() === 0) {
+    contact.appendRow(['Časovni žig', 'Ime', 'Email', 'Sporočilo']);
   }
 }
 
@@ -108,6 +113,9 @@ function doPost(e) {
       case 'music':
         result = handleMusic(data);
         break;
+      case 'contact':
+        result = handleContact(data);
+        break;
       default:
         result = { status: 'error', message: 'Neznana akcija: ' + data.action };
     }
@@ -128,9 +136,9 @@ function handleRsvp(data) {
     new Date(),
     data.ime || '',
     data.priimek || '',
-    data.email || '',
     data.telefon || '',
     data.stOseb || 1,
+    data.spremljevalci || '',
     data.prehrana || '',
     data.udelezba || 'da'
   ]);
@@ -187,4 +195,39 @@ function handleMusic(data) {
   ]);
 
   return { status: 'ok', message: 'Glasbene želje shranjene!' };
+}
+
+function handleContact(data) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Contact');
+
+  // Zapiši v sheet
+  sheet.appendRow([
+    new Date(),
+    data.name || '',
+    data.email || '',
+    data.message || ''
+  ]);
+
+  // Pošlji email gostitelju
+  try {
+    var subject = '🎂 Novo sporočilo od ' + (data.name || 'gost') + ' — Vabilo na 50-tko';
+    var body = 'Novo sporočilo prek spletnega vabila:\n\n' +
+      'Ime: ' + (data.name || '/') + '\n' +
+      'Email: ' + (data.email || '/') + '\n' +
+      'Sporočilo:\n' + (data.message || '/') + '\n\n' +
+      '---\nPoslano s spletne strani vabila.';
+
+    MailApp.sendEmail({
+      to: 'ales@luznar.com',
+      subject: subject,
+      body: body,
+      replyTo: data.email || ''
+    });
+  } catch (err) {
+    // Email ni uspel, ampak sporočilo je shranjeno v sheetu
+    Logger.log('Email napaka: ' + err.message);
+  }
+
+  return { status: 'ok', message: 'Sporočilo uspešno poslano!' };
 }

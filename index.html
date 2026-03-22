@@ -317,10 +317,36 @@
           <p class="detail-card__text">Smart casual — udobno, a lepo! Zunaj bo, zato prinesi toplejši sloj.</p>
         </div>
 
-        <div class="detail-card">
-          <span class="detail-card__icon">📞</span>
-          <h3 class="detail-card__title">Kontakt</h3>
-          <p class="detail-card__text">Za vprašanja se obrni na gostitelja.</p>
+      </div>
+
+      <!-- Kontaktni obrazec -->
+      <div class="contact-section">
+        <h3 class="contact-section__title">✉️ Pošlji sporočilo</h3>
+        <p class="contact-section__subtitle">Imaš vprašanje? Piši nam!</p>
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="contactName" class="form-label">Ime *</label>
+              <input type="text" id="contactName" name="contactName" class="form-input" required placeholder="Tvoje ime">
+            </div>
+            <div class="form-group">
+              <label for="contactEmail" class="form-label">E-pošta *</label>
+              <input type="email" id="contactEmail" name="contactEmail" class="form-input" required placeholder="tvoj@email.com">
+            </div>
+          </div>
+          <div class="form-group" style="margin-top: 1.25rem;">
+            <label for="contactMessage" class="form-label">Sporočilo *</label>
+            <textarea id="contactMessage" name="contactMessage" class="form-input form-textarea" rows="4" required placeholder="Tvoje sporočilo..."></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary btn--submit" id="contactSubmit" style="margin-top: 1.5rem;">
+            <span class="btn__text">Pošlji sporočilo</span>
+            <span class="btn__spinner" hidden></span>
+          </button>
+        </form>
+        <div class="contact-success" id="contactSuccess" hidden>
+          <div class="rsvp-success__icon">✅</div>
+          <h3 class="rsvp-success__title">Sporočilo poslano!</h3>
+          <p class="rsvp-success__text">Hvala! Odgovorili ti bomo v najkrajšem času.</p>
         </div>
       </div>
 
@@ -346,5 +372,6 @@
   <script src="js/rsvp.js"></script>
   <script src="js/seating.js"></script>
   <script src="js/music.js"></script>
+  <script src="js/contact.js"></script>
 </body>
 </html>
