@@ -182,7 +182,7 @@
     <div class="container">
       <div class="section__header">
         <h2 class="section__title">Izberi svoj sedež</h2>
-        <p class="section__subtitle">Klikni na prazen sedež, da ga rezerviraš.</p>
+        <p class="section__subtitle" id="seatingStatus">Klikni na prazen sedež, da ga rezerviraš.</p>
       </div>
 
       <!-- Zaklenjeno sporočilo -->
@@ -199,6 +199,10 @@
         <div class="seating-legend__item">
           <span class="legend-dot legend-dot--empty"></span>
           <span>Prosto</span>
+        </div>
+        <div class="seating-legend__item">
+          <span class="legend-dot legend-dot--selected"></span>
+          <span>Izbrano</span>
         </div>
         <div class="seating-legend__item">
           <span class="legend-dot legend-dot--taken"></span>

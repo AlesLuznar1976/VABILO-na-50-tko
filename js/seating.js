@@ -1,5 +1,6 @@
 /* ==========================================
    SEATING.JS — Interaktivni SVG sedežni red
+   Podpora za izbiro sedežev za več oseb
    ========================================== */
 
 // Konfiguracija miz — prilagodi pozicije in število sedežev
@@ -19,15 +20,35 @@ var SEAT_RADIUS = 18;
 var SEAT_ORBIT = 95;
 
 var occupiedSeats = [];
-var selectedSeat = null;
+var selectedSeats = []; // Array za multi-seat: [{table, seat, name}, ...]
+var partyNames = [];    // Imena oseb v skupini
+var currentPickIndex = 0; // Katera oseba trenutno izbira sedež
+
+function getPartyNames() {
+  try {
+    var stored = sessionStorage.getItem('partyNames');
+    if (stored) return JSON.parse(stored);
+  } catch (e) {}
+  var guestName = sessionStorage.getItem('guestName') || 'Gost';
+  return [guestName];
+}
+
+function getSeatsNeeded() {
+  return getPartyNames().length;
+}
 
 function initSeatingChart() {
   var svg = document.getElementById('seatingSvg');
   if (!svg || svg.childNodes.length > 0) return;
 
+  partyNames = getPartyNames();
+  selectedSeats = [];
+  currentPickIndex = 0;
+
   // Naloži zasedene sedeže
   loadOccupiedSeats().then(function () {
     renderChart(svg);
+    updateSeatingStatus();
   });
 }
 
@@ -43,6 +64,24 @@ function loadOccupiedSeats() {
     });
 }
 
+function updateSeatingStatus() {
+  var statusEl = document.getElementById('seatingStatus');
+  if (!statusEl) return;
+
+  var total = partyNames.length;
+  var chosen = selectedSeats.length;
+
+  if (total <= 1 && chosen === 0) {
+    statusEl.textContent = 'Klikni na zelen sedež, da ga rezerviraš.';
+  } else if (total > 1 && chosen < total) {
+    statusEl.innerHTML = '<strong>Izbira sedeža za: ' + partyNames[chosen] + '</strong> (' + (chosen + 1) + '/' + total + ')';
+  } else if (chosen === total && total > 1) {
+    statusEl.innerHTML = 'Vsi sedeži izbrani! Klikni <strong>"Potrdi vse sedeže"</strong> za dokončanje.';
+  } else if (chosen === total && total === 1) {
+    statusEl.textContent = '';
+  }
+}
+
 function renderChart(svg) {
   // Počisti
   svg.innerHTML = '';
@@ -53,7 +92,7 @@ function renderChart(svg) {
     id: 'dotPattern', x: '0', y: '0', width: '30', height: '30', patternUnits: 'userSpaceOnUse'
   });
   var dot = createSvgElement('circle', {
-    cx: '15', cy: '15', r: '1.5', fill: 'rgba(123, 47, 190, 0.08)'
+    cx: '15', cy: '15', r: '1.5', fill: 'rgba(10, 22, 40, 0.06)'
   });
   pattern.appendChild(dot);
   defs.appendChild(pattern);
@@ -130,9 +169,18 @@ function renderChart(svg) {
       var seatCy = table.cy + SEAT_ORBIT * Math.sin(angle);
 
       var seatInfo = getSeatInfo(table.id, i + 1);
+      var selectedInfo = getSelectedSeatInfo(table.id, i + 1);
       var seatClass = 'seat-empty';
+      var displayName = i + 1;
+
       if (seatInfo) {
-        seatClass = seatInfo.name === guestName ? 'seat-mine' : 'seat-taken';
+        // Že potrjeno na strežniku
+        seatClass = isMyParty(seatInfo.name) ? 'seat-mine' : 'seat-taken';
+        displayName = truncateName(seatInfo.name);
+      } else if (selectedInfo) {
+        // Lokalno izbrano, še ne potrjeno
+        seatClass = 'seat-selected';
+        displayName = truncateName(selectedInfo.name);
       }
 
       var seat = createSvgElement('circle', {
@@ -142,8 +190,11 @@ function renderChart(svg) {
         'data-seat': i + 1
       });
 
-      if (!seatInfo) {
+      if (!seatInfo && !selectedInfo) {
         seat.addEventListener('click', onSeatClick);
+      } else if (selectedInfo) {
+        // Omogoči deselect za lokalno izbrane
+        seat.addEventListener('click', onSelectedSeatClick);
       }
 
       group.appendChild(seat);
@@ -152,7 +203,7 @@ function renderChart(svg) {
       var seatLabel = createSvgElement('text', {
         x: seatCx, y: seatCy, class: 'seat-label'
       });
-      seatLabel.textContent = seatInfo ? truncateName(seatInfo.name) : (i + 1);
+      seatLabel.textContent = displayName;
       group.appendChild(seatLabel);
     }
 
@@ -160,10 +211,26 @@ function renderChart(svg) {
   });
 }
 
+function isMyParty(name) {
+  for (var i = 0; i < partyNames.length; i++) {
+    if (partyNames[i] === name) return true;
+  }
+  return false;
+}
+
 function getSeatInfo(tableId, seatNum) {
   for (var i = 0; i < occupiedSeats.length; i++) {
     if (occupiedSeats[i].table == tableId && occupiedSeats[i].seat == seatNum) {
       return occupiedSeats[i];
+    }
+  }
+  return null;
+}
+
+function getSelectedSeatInfo(tableId, seatNum) {
+  for (var i = 0; i < selectedSeats.length; i++) {
+    if (selectedSeats[i].table == tableId && selectedSeats[i].seat == seatNum) {
+      return selectedSeats[i];
     }
   }
   return null;
@@ -181,21 +248,171 @@ function truncateName(name) {
 function onSeatClick(e) {
   var tableId = parseInt(e.target.getAttribute('data-table'));
   var seatNum = parseInt(e.target.getAttribute('data-seat'));
+  var total = partyNames.length;
 
-  selectedSeat = { table: tableId, seat: seatNum };
+  if (total <= 1) {
+    // Klasični način — en sedež, takoj potrdi
+    var seatData = { table: tableId, seat: seatNum, name: partyNames[0] };
 
-  // Pokaži modal
-  var modal = document.getElementById('seatModal');
-  var modalText = document.getElementById('seatModalText');
-  modalText.textContent = 'Želiš sedeti na Mizi ' + tableId + ', Sedež ' + seatNum + '?';
-  modal.classList.add('is-visible');
+    var modal = document.getElementById('seatModal');
+    var modalText = document.getElementById('seatModalText');
+    modalText.textContent = 'Želiš sedeti na Mizi ' + tableId + ', Sedež ' + seatNum + '?';
+    modal.classList.add('is-visible');
+
+    // Shrani za potrditev
+    window._pendingSingleSeat = seatData;
+    return;
+  }
+
+  // Multi-seat način
+  if (selectedSeats.length >= total) {
+    showToast('Že imaš izbranih ' + total + ' sedežev. Klikni na oranžen sedež za deselect.', 'error');
+    return;
+  }
+
+  var personName = partyNames[selectedSeats.length];
+  selectedSeats.push({ table: tableId, seat: seatNum, name: personName });
+
+  var svg = document.getElementById('seatingSvg');
+  renderChart(svg);
+  updateSeatingStatus();
+
+  showToast('Sedež za ' + personName + ' izbran! (Miza ' + tableId + ', Sedež ' + seatNum + ')', 'success');
+
+  // Ko so vsi sedeži izbrani, pokaži potrditveni gumb
+  if (selectedSeats.length === total) {
+    showConfirmAllButton();
+  }
 }
 
-// Modal gumbi
-document.getElementById('seatConfirm').addEventListener('click', function () {
-  if (!selectedSeat) return;
+function onSelectedSeatClick(e) {
+  var tableId = parseInt(e.target.getAttribute('data-table'));
+  var seatNum = parseInt(e.target.getAttribute('data-seat'));
 
-  var guestName = sessionStorage.getItem('guestName') || 'Gost';
+  // Odstrani ta sedež in vse kasnejše (vrstni red je važen)
+  var removeIndex = -1;
+  for (var i = 0; i < selectedSeats.length; i++) {
+    if (selectedSeats[i].table == tableId && selectedSeats[i].seat == seatNum) {
+      removeIndex = i;
+      break;
+    }
+  }
+
+  if (removeIndex >= 0) {
+    var removedName = selectedSeats[removeIndex].name;
+    // Odstrani od tega indeksa naprej (ker je vrstni red pomemben)
+    selectedSeats.splice(removeIndex);
+
+    var svg = document.getElementById('seatingSvg');
+    renderChart(svg);
+    updateSeatingStatus();
+    hideConfirmAllButton();
+
+    showToast('Sedež za ' + removedName + ' odstranjen.', 'error');
+  }
+}
+
+function showConfirmAllButton() {
+  var existing = document.getElementById('confirmAllSeats');
+  if (existing) return;
+
+  var container = document.getElementById('seatingChart');
+  if (!container) return;
+
+  var wrapper = document.createElement('div');
+  wrapper.style.textAlign = 'center';
+  wrapper.style.marginTop = '1.5rem';
+  wrapper.id = 'confirmAllWrapper';
+
+  // Povzetek izbire
+  var summary = document.createElement('div');
+  summary.style.marginBottom = '1rem';
+  summary.style.fontSize = '0.95rem';
+  summary.style.color = '#0A1628';
+  var summaryHtml = '<strong>Izbrani sedeži:</strong><br>';
+  selectedSeats.forEach(function (s) {
+    summaryHtml += s.name + ' → Miza ' + s.table + ', Sedež ' + s.seat + '<br>';
+  });
+  summary.innerHTML = summaryHtml;
+  wrapper.appendChild(summary);
+
+  var btn = document.createElement('button');
+  btn.className = 'btn btn--primary';
+  btn.id = 'confirmAllSeats';
+  btn.innerHTML = '<span>Potrdi vse sedeže</span>';
+  btn.addEventListener('click', confirmAllSeats);
+  wrapper.appendChild(btn);
+
+  container.parentNode.insertBefore(wrapper, container.nextSibling);
+}
+
+function hideConfirmAllButton() {
+  var wrapper = document.getElementById('confirmAllWrapper');
+  if (wrapper) wrapper.remove();
+}
+
+function confirmAllSeats() {
+  var btn = document.getElementById('confirmAllSeats');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Rezerviram...';
+  }
+
+  // Pošlji vse sedeže naenkrat
+  var promises = selectedSeats.map(function (s) {
+    return apiPost({
+      action: 'seat',
+      name: s.name,
+      table: s.table,
+      seat: s.seat
+    });
+  });
+
+  Promise.all(promises)
+    .then(function (results) {
+      var allOk = results.every(function (r) { return r.status === 'ok'; });
+
+      if (allOk) {
+        // Dodaj vse v lokalni seznam
+        selectedSeats.forEach(function (s) {
+          occupiedSeats.push({ name: s.name, table: s.table, seat: s.seat });
+        });
+
+        selectedSeats = [];
+        hideConfirmAllButton();
+
+        var svg = document.getElementById('seatingSvg');
+        renderChart(svg);
+
+        showToast('Vsi sedeži uspešno rezervirani!', 'success');
+
+        if (typeof celebrateConfetti === 'function') {
+          celebrateConfetti();
+        }
+      } else {
+        showToast('Nekateri sedeži so že zasedeni. Osvežujem...', 'error');
+        selectedSeats = [];
+        hideConfirmAllButton();
+        loadOccupiedSeats().then(function () {
+          var svg = document.getElementById('seatingSvg');
+          renderChart(svg);
+          updateSeatingStatus();
+        });
+      }
+    })
+    .catch(function () {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Potrdi vse sedeže';
+      }
+      showToast('Napaka pri rezervaciji. Poskusi znova.', 'error');
+    });
+}
+
+// Modal gumbi — za enojno izbiro
+document.getElementById('seatConfirm').addEventListener('click', function () {
+  var seatData = window._pendingSingleSeat;
+  if (!seatData) return;
 
   var modal = document.getElementById('seatModal');
   var confirmBtn = document.getElementById('seatConfirm');
@@ -204,9 +421,9 @@ document.getElementById('seatConfirm').addEventListener('click', function () {
 
   apiPost({
     action: 'seat',
-    name: guestName,
-    table: selectedSeat.table,
-    seat: selectedSeat.seat
+    name: seatData.name,
+    table: seatData.table,
+    seat: seatData.seat
   })
     .then(function (result) {
       modal.classList.remove('is-visible');
@@ -214,14 +431,12 @@ document.getElementById('seatConfirm').addEventListener('click', function () {
       confirmBtn.textContent = 'Potrdi';
 
       if (result.status === 'ok') {
-        // Dodaj v lokalni seznam
         occupiedSeats.push({
-          name: guestName,
-          table: selectedSeat.table,
-          seat: selectedSeat.seat
+          name: seatData.name,
+          table: seatData.table,
+          seat: seatData.seat
         });
 
-        // Osveži prikaz
         var svg = document.getElementById('seatingSvg');
         renderChart(svg);
 
@@ -232,33 +447,32 @@ document.getElementById('seatConfirm').addEventListener('click', function () {
         }
       } else {
         showToast(result.message || 'Sedež je že zaseden.', 'error');
-        // Osveži sedeže s strežnika
         loadOccupiedSeats().then(function () {
           var svg = document.getElementById('seatingSvg');
           renderChart(svg);
         });
       }
 
-      selectedSeat = null;
+      window._pendingSingleSeat = null;
     })
     .catch(function () {
       modal.classList.remove('is-visible');
       confirmBtn.disabled = false;
       confirmBtn.textContent = 'Potrdi';
       showToast('Napaka pri rezervaciji. Poskusi znova.', 'error');
-      selectedSeat = null;
+      window._pendingSingleSeat = null;
     });
 });
 
 document.getElementById('seatCancel').addEventListener('click', function () {
   document.getElementById('seatModal').classList.remove('is-visible');
-  selectedSeat = null;
+  window._pendingSingleSeat = null;
 });
 
 // Zapri modal ob kliku na backdrop
 document.querySelector('#seatModal .modal__backdrop').addEventListener('click', function () {
   document.getElementById('seatModal').classList.remove('is-visible');
-  selectedSeat = null;
+  window._pendingSingleSeat = null;
 });
 
 // ===== SVG Helper =====

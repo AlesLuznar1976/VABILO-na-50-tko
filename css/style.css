@@ -849,6 +849,11 @@ input, select, textarea { font: inherit; }
   border-color: #388E3C;
 }
 
+.legend-dot--selected {
+  background: #E67E22;
+  border-color: #D35400;
+}
+
 .legend-dot--taken {
   background: #9E9E9E;
   border-color: #757575;
@@ -897,6 +902,15 @@ input, select, textarea { font: inherit; }
   stroke-width: 2;
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.seat-selected {
+  fill: #E67E22;
+  stroke: #D35400;
+  stroke-width: 3;
+  cursor: pointer;
+  filter: drop-shadow(0 0 6px rgba(230, 126, 34, 0.5));
+  animation: seatPulse 2s ease-in-out infinite;
 }
 
 .seat-mine {

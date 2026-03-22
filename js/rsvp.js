@@ -103,6 +103,14 @@
         if (result.status === 'ok') {
           var fullName = data.ime + ' ' + data.priimek;
           sessionStorage.setItem('guestName', fullName);
+          sessionStorage.setItem('stOseb', data.stOseb);
+
+          // Shrani imena vseh oseb v skupini (glavna oseba + spremljevalci)
+          var partyNames = [fullName];
+          if (spremljevalci.length > 0) {
+            partyNames = partyNames.concat(spremljevalci);
+          }
+          sessionStorage.setItem('partyNames', JSON.stringify(partyNames));
 
           form.hidden = true;
           successEl.hidden = false;
