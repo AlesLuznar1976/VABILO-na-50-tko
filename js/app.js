@@ -241,11 +241,23 @@ function resetPage() {
 // ===== API HELPER =====
 function apiPost(data) {
   if (CONFIG.APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-    // Demo način — simuliraj uspeh
+    // Demo način — shrani lokalno
     return new Promise(function (resolve) {
       setTimeout(function () {
-        resolve({ status: 'ok', message: 'Demo način — podatki niso bili poslani.' });
-      }, 1000);
+        if (data.action === 'seat') {
+          var seats = [];
+          try { seats = JSON.parse(localStorage.getItem('demoSeats') || '[]'); } catch(e) {}
+          // Preveri ali je sedež že zaseden
+          var taken = seats.some(function(s) { return s.table == data.table && s.seat == data.seat; });
+          if (taken) {
+            resolve({ status: 'error', message: 'Sedež je že zaseden.' });
+            return;
+          }
+          seats.push({ table: data.table, seat: data.seat, name: data.name });
+          localStorage.setItem('demoSeats', JSON.stringify(seats));
+        }
+        resolve({ status: 'ok', message: 'Demo način — podatki shranjeni lokalno.' });
+      }, 500);
     });
   }
 
@@ -258,11 +270,17 @@ function apiPost(data) {
 
 function apiGet(params) {
   if (CONFIG.APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-    // Demo način
+    // Demo način — preberi iz localStorage
     return new Promise(function (resolve) {
       setTimeout(function () {
-        resolve({ status: 'ok', seats: [] });
-      }, 500);
+        if (params.action === 'getSeating') {
+          var seats = [];
+          try { seats = JSON.parse(localStorage.getItem('demoSeats') || '[]'); } catch(e) {}
+          resolve({ status: 'ok', seats: seats });
+        } else {
+          resolve({ status: 'ok' });
+        }
+      }, 200);
     });
   }
 

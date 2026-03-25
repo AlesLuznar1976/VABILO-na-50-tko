@@ -347,8 +347,8 @@ function truncateName(name) {
   return p.length > 1 ? p[0] + ' ' + p[p.length-1].charAt(0) + '.' : name;
 }
 function getTableName(tid) {
-  if (tid === INNER_TABLE.id) return INNER_TABLE.label;
-  if (tid === OUTER_TABLE.id) return OUTER_TABLE.label;
+  if (tid === INNER_TABLE.id) return 'Notranja miza';
+  if (tid === OUTER_TABLE.id) return 'Zunanja miza';
   return 'Miza ' + tid;
 }
 
