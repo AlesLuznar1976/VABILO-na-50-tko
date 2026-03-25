@@ -579,66 +579,61 @@ input, select, textarea { font: inherit; }
 }
 
 /* ==========================================
-   OSEBNO VABILO
+   HERO INVITE (osebno vabilo v hero sekciji)
    ========================================== */
-.section--invite {
-  background: var(--color-bg);
-  padding: 4rem 0 2rem;
-}
-
-.invite-card {
-  max-width: 700px;
-  margin: 0 auto;
-  background: var(--color-white);
+.hero__invite {
+  max-width: 620px;
+  margin: 1.5rem auto 2rem;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: var(--radius-xl);
-  padding: 3rem 2.5rem;
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(212, 175, 55, 0.15);
-  position: relative;
+  padding: 2rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  text-align: left;
+  animation: fadeInUp 0.8s ease both;
+  animation-delay: 0.5s;
 }
 
-.invite-card::before {
-  content: '✉';
-  position: absolute;
-  top: -1.2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2rem;
-  background: var(--color-bg);
-  padding: 0 1rem;
+.hero__invite p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.75rem;
 }
 
-.invite-text {
-  font-size: 1.05rem;
-  line-height: 1.75;
-  color: var(--color-text);
-  margin-bottom: 1rem;
-}
-
-.invite-text:first-child {
+.hero__invite p:first-child {
   font-style: italic;
-  color: var(--color-text-light);
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.invite-motto {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
+.hero__invite p:last-child {
+  margin-bottom: 0;
+}
+
+.hero__invite strong {
   color: #D4AF37;
+}
+
+.hero__invite-motto {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #D4AF37 !important;
   text-align: center;
-  margin: 1.5rem 0;
+  margin: 1rem 0 !important;
   line-height: 1.4;
 }
 
-.invite-signature {
+.hero__invite-sign {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  color: var(--color-text);
   text-align: right;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  color: rgba(255, 255, 255, 0.95) !important;
+  margin-top: 0.75rem !important;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* ==========================================
