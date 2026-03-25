@@ -541,11 +541,18 @@ input, select, textarea { font: inherit; }
   transform: translateY(-2px);
 }
 
+.hero__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  animation: fadeInUp 0.8s ease both;
+  animation-delay: 1s;
+}
+
 .btn--hero {
   font-size: 1.125rem;
   padding: 1rem 2.5rem;
-  animation: fadeInUp 0.8s ease both, pulse 2.5s ease-in-out infinite;
-  animation-delay: 1s, 2s;
 }
 
 .btn__arrow {
