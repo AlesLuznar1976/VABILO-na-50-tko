@@ -265,7 +265,7 @@ input, select, textarea { font: inherit; }
 .hero__bg-image {
   position: absolute;
   inset: 0;
-  background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80') center 60%/cover no-repeat;
+  background: url('../images/jezero-jasna.jpg') center 40%/cover no-repeat;
   z-index: 0;
 }
 
