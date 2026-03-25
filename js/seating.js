@@ -97,9 +97,9 @@ function renderChart(svg) {
   svg.appendChild(makeRect(0, 0, SVG_W, SVG_H, 0, 'url(#dots)'));
 
   // ======== NOTRANJI PROSTOR ========
-  // Zunanji okvir
+  // Zunanji okvir — vključuje obe mizi (20 + 40 oseb)
   svg.appendChild(createSvgElement('rect', {
-    x:40, y:30, width:720, height:480, rx:0,
+    x:40, y:30, width:720, height:700, rx:0,
     fill:'rgba(245,240,232,0.4)', stroke:'rgba(10,22,40,0.15)', 'stroke-width':1.5
   }));
   addText(svg, 400, 18, 'NOTRANJI PROSTOR', 10, 'rgba(10,22,40,0.25)', 600);
@@ -157,8 +157,7 @@ function renderChart(svg) {
   // ======== NOTRANJA MIZA ZA 20 OSEB (poševna) ========
   drawInnerTable(svg);
 
-  // ======== ZUNANJA MIZA ZA 40 OSEB ========
-  addText(svg, SVG_W/2, 570, 'ZUNAJ', 11, 'rgba(10,22,40,0.3)', 600);
+  // ======== MIZA ZA 40 OSEB ========
   drawOuterTable(svg);
 }
 
