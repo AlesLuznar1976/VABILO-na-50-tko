@@ -24,17 +24,16 @@ var SVG_W = 900, SVG_H = 780;
 
 // ===== NOTRANJA MIZA (1 velika poševna miza za 20 oseb) =====
 var INNER_TABLE = {
-  id: 1, label: 'Miza za 20 oseb',
-  // Poševna miza — pravokotnik rotiran
+  id: 1, label: '',
   cx: 420, cy: 410,
   width: 280, height: 80,
   rotation: -20,
-  seats: 20
+  seatsTop: 7, seatsBottom: 7, seatsLeft: 2, seatsRight: 2  // 18 sedežev
 };
 
-// ===== ZUNANJA DOLGA MIZA (40 sedežev + 2 na koncih) =====
+// ===== DOLGA MIZA (40 sedežev + 2 na koncih) =====
 var OUTER_TABLE = {
-  id: 2, label: 'Miza za 40 oseb',
+  id: 2, label: '',
   x: 100, y: 610, width: 620, height: 50,
   seatsTop: 20,
   seatsBottom: 20,
@@ -183,35 +182,35 @@ function drawInnerTable(svg) {
   lbl.textContent = t.label;
   g.appendChild(lbl);
 
-  // Sedeži okrog poševne mize
-  // Razporedimo 20 sedežev: 7 zgoraj, 7 spodaj, 3 levo, 3 desno
+  // Sedeži okrog poševne mize: 7 zgoraj, 7 spodaj, 2 levo, 2 desno = 18
   var rad = Math.PI / 180 * t.rotation;
   var cosR = Math.cos(rad), sinR = Math.sin(rad);
 
   var positions = [];
+  var nTop = t.seatsTop, nBot = t.seatsBottom, nL = t.seatsLeft, nR = t.seatsRight;
 
-  // Zgornja stran (7 sedežev)
-  for (var i = 0; i < 7; i++) {
-    var lx = -t.width/2 + t.width/(7+1) * (i+1);
+  // Zgornja stran
+  for (var i = 0; i < nTop; i++) {
+    var lx = -t.width/2 + t.width/(nTop+1) * (i+1);
     var ly = -t.height/2 - 28;
     positions.push([lx, ly]);
   }
-  // Spodnja stran (7 sedežev)
-  for (var i = 0; i < 7; i++) {
-    var lx = -t.width/2 + t.width/(7+1) * (i+1);
+  // Spodnja stran
+  for (var i = 0; i < nBot; i++) {
+    var lx = -t.width/2 + t.width/(nBot+1) * (i+1);
     var ly = t.height/2 + 28;
     positions.push([lx, ly]);
   }
-  // Leva stran (3 sedeži)
-  for (var i = 0; i < 3; i++) {
+  // Leva stran
+  for (var i = 0; i < nL; i++) {
     var lx = -t.width/2 - 28;
-    var ly = -t.height/2 + t.height/(3+1) * (i+1);
+    var ly = -t.height/2 + t.height/(nL+1) * (i+1);
     positions.push([lx, ly]);
   }
-  // Desna stran (3 sedeži)
-  for (var i = 0; i < 3; i++) {
+  // Desna stran
+  for (var i = 0; i < nR; i++) {
     var lx = t.width/2 + 28;
-    var ly = -t.height/2 + t.height/(3+1) * (i+1);
+    var ly = -t.height/2 + t.height/(nR+1) * (i+1);
     positions.push([lx, ly]);
   }
 
