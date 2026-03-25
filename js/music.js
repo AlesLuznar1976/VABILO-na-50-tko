@@ -35,6 +35,8 @@ function initMusicForm() {
   var newForm = form.cloneNode(true);
   form.parentNode.replaceChild(newForm, form);
   form = newForm;
+  // Ohranja vidnost po kloniranju (reveal animacija)
+  form.classList.add('visible');
 
   // Reattach refs
   submitBtn = document.getElementById('musicSubmit');
