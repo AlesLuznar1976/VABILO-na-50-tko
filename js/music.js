@@ -1,5 +1,6 @@
 /* ==========================================
    MUSIC.JS — Izbira glasbe
+   Po potrditvi ostane na isti strani
    ========================================== */
 
 var GENRES = [
@@ -7,7 +8,7 @@ var GENRES = [
   { id: '90-00', label: '💿 90-00' },
   { id: 'jugo', label: '🎶 Jugo zabavna' },
   { id: 'narodno', label: '🪗 Narodno zabavna' },
-  { id: 'slovenska', label: '<img src="https://flagcdn.com/24x18/si.png" alt="🇸🇮" style="vertical-align:middle;margin-right:4px"> Slovenska', html: true },
+  { id: 'slovenska', label: '<img src="https://flagcdn.com/24x18/si.png" alt="SI" style="vertical-align:middle;margin-right:4px"> Slovenska', html: true },
   { id: 'plesna', label: '💃 Plesna' },
   { id: 'moderna', label: '🎧 Moderna' },
   { id: 'rock', label: '🎸 Rock' },
@@ -29,7 +30,16 @@ function initMusicForm() {
   var submitBtn = document.getElementById('musicSubmit');
   var btnText = submitBtn.querySelector('.btn__text');
   var btnSpinner = submitBtn.querySelector('.btn__spinner');
-  var successEl = document.getElementById('musicSuccess');
+
+  // Odstrani prejšnji listener (če se initMusicForm kliče večkrat)
+  var newForm = form.cloneNode(true);
+  form.parentNode.replaceChild(newForm, form);
+  form = newForm;
+
+  // Reattach refs
+  submitBtn = document.getElementById('musicSubmit');
+  btnText = submitBtn.querySelector('.btn__text');
+  btnSpinner = submitBtn.querySelector('.btn__spinner');
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -57,15 +67,15 @@ function initMusicForm() {
       lastnaZelja: lastnaZelja
     })
       .then(function (result) {
+        submitBtn.disabled = false;
+        btnText.hidden = false;
+        btnSpinner.hidden = true;
+
         if (result.status === 'ok') {
-          form.hidden = true;
-          successEl.hidden = false;
-          showToast('Glasbene želje shranjene!', 'success');
+          showToast('Glasbene želje shranjene! Hvala!', 'success');
+          // NE skrivamo forme — uporabnik ostane na isti strani
         } else {
           showToast(result.message || 'Prišlo je do napake.', 'error');
-          submitBtn.disabled = false;
-          btnText.hidden = false;
-          btnSpinner.hidden = true;
         }
       })
       .catch(function () {

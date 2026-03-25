@@ -257,16 +257,29 @@ input, select, textarea { font: inherit; }
   align-items: center;
   justify-content: center;
   padding-top: var(--nav-height);
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(10, 22, 40, 0.55) 0%,
-      rgba(10, 22, 40, 0.4) 40%,
-      rgba(10, 22, 40, 0.6) 70%,
-      rgba(10, 22, 40, 0.85) 100%
-    ),
-    url('../img/hero-jasna.jpg') center/cover no-repeat fixed;
+  position: relative;
   overflow: hidden;
+  background: #0A1628;
+}
+
+.hero__bg-image {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1520808663317-647b476a81b9?w=1920&q=80') center 40%/cover no-repeat;
+  z-index: 0;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 22, 40, 0.45) 0%,
+    rgba(10, 22, 40, 0.35) 40%,
+    rgba(10, 22, 40, 0.55) 70%,
+    rgba(10, 22, 40, 0.85) 100%
+  );
+  z-index: 1;
 }
 
 #confettiCanvas {

@@ -177,13 +177,13 @@ function resetPage() {
   }, 400);
 }
 
-// ===== HERO GUMB — NOVA OSEBA =====
+// ===== HERO GUMB — POTRDI UDELEŽBO (reset za novega gosta) =====
 (function initHeroReset() {
   var heroBtn = document.getElementById('heroRsvpBtn');
   if (!heroBtn) return;
 
-  heroBtn.addEventListener('click', function () {
-    // Počisti osebne podatke (sedeži ostanejo na strežniku)
+  heroBtn.addEventListener('click', function (e) {
+    // Počisti osebne podatke (sedeži na strežniku ostanejo)
     localStorage.removeItem('guestName');
     localStorage.removeItem('stOseb');
     localStorage.removeItem('partyNames');
@@ -222,7 +222,7 @@ function resetPage() {
     // Ponastavi glasbo
     var musicForm = document.getElementById('musicForm');
     var musicSuccess = document.getElementById('musicSuccess');
-    if (musicForm) { musicForm.hidden = true; musicForm.reset && musicForm.reset(); }
+    if (musicForm) { musicForm.hidden = true; }
     if (musicSuccess) musicSuccess.hidden = true;
 
     // Ponastavi submit gumbe
