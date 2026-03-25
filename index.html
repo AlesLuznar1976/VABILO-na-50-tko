@@ -96,9 +96,17 @@
           <span>Potrdi udeležbo</span>
           <span class="btn__arrow">→</span>
         </a>
-        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Rojstnodnevna+zabava+-+50+let&dates=20260516T180000/20260517T020000&location=Jezero+Jasna,+Kranjska+Gora&details=Pridru%C5%BEi+se+nam+na+nepozabnem+prazniku+ob+Jezeru+Jasna!" target="_blank" rel="noopener" class="btn btn--outline btn--hero" id="addToCalendarBtn">
-          <span>📅 Dodaj v koledar</span>
-        </a>
+        <div class="calendar-dropdown">
+          <button class="btn btn--outline btn--hero" id="addToCalendarBtn" type="button">
+            <span>📅 Dodaj v koledar</span>
+            <span class="btn__arrow">▾</span>
+          </button>
+          <div class="calendar-dropdown__menu" id="calendarMenu">
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Rojstnodnevna+zabava+-+50+let&dates=20260516T180000/20260517T020000&location=Jezero+Jasna,+Kranjska+Gora&details=Pridru%C5%BEi+se+nam+na+nepozabnem+prazniku+ob+Jezeru+Jasna!" target="_blank" rel="noopener">Google Calendar</a>
+            <a href="#" id="downloadIcs">Apple / iPhone</a>
+            <a href="https://outlook.live.com/calendar/0/action/compose?subject=Rojstnodnevna+zabava+-+50+let&startdt=2026-05-16T18:00:00&enddt=2026-05-17T02:00:00&location=Jezero+Jasna,+Kranjska+Gora&body=Pridru%C5%BEi+se+nam+na+nepozabnem+prazniku+ob+Jezeru+Jasna!" target="_blank" rel="noopener">Outlook</a>
+          </div>
+        </div>
       </div>
     </div>
 

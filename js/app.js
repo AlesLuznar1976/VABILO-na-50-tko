@@ -308,3 +308,52 @@ window.addEventListener('DOMContentLoaded', function () {
     }
   }
 });
+
+// ===== CALENDAR DROPDOWN =====
+(function initCalendarDropdown() {
+  var btn = document.getElementById('addToCalendarBtn');
+  var menu = document.getElementById('calendarMenu');
+  var icsLink = document.getElementById('downloadIcs');
+  if (!btn || !menu) return;
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    menu.classList.toggle('is-open');
+  });
+
+  document.addEventListener('click', function () {
+    menu.classList.remove('is-open');
+  });
+
+  menu.addEventListener('click', function (e) {
+    e.stopPropagation();
+  });
+
+  // .ics download za Apple/iPhone
+  if (icsLink) {
+    icsLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      menu.classList.remove('is-open');
+      var ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Vabilo//50let//SL',
+        'BEGIN:VEVENT',
+        'DTSTART:20260516T180000',
+        'DTEND:20260517T020000',
+        'SUMMARY:Rojstnodnevna zabava - 50 let',
+        'LOCATION:Jezero Jasna\\, Kranjska Gora',
+        'DESCRIPTION:Pridruži se nam na nepozabnem prazniku ob Jezeru Jasna!',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+      var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'rojstni-dan-50.ics';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+})();

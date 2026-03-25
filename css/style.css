@@ -563,6 +563,47 @@ input, select, textarea { font: inherit; }
   transform: translateX(4px);
 }
 
+/* Calendar dropdown */
+.calendar-dropdown {
+  position: relative;
+}
+
+.calendar-dropdown__menu {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  min-width: 200px;
+  z-index: 10;
+}
+
+.calendar-dropdown__menu.is-open {
+  display: block;
+  animation: fadeInUp 0.2s ease;
+}
+
+.calendar-dropdown__menu a {
+  display: block;
+  padding: 0.75rem 1.25rem;
+  color: var(--color-text);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.calendar-dropdown__menu a:hover {
+  background: rgba(212, 175, 55, 0.1);
+  color: #B8860B;
+}
+
 .btn--submit {
   width: 100%;
   justify-content: center;
