@@ -8,7 +8,7 @@ const CONFIG = {
   APPS_SCRIPT_URL: 'YOUR_APPS_SCRIPT_URL_HERE',
 
   // Datum zabave
-  PARTY_DATE: new Date('2026-05-16T18:00:00+02:00'),
+  PARTY_DATE: new Date('2026-05-16T20:00:00+02:00'),
 
   // Stanje aplikacije
   isRsvpCompleted: false,
