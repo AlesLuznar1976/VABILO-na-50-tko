@@ -144,6 +144,7 @@ function unlockSections() {
   // Prikaži vsebino
   document.getElementById('seatingLegend').hidden = false;
   document.getElementById('seatingChart').hidden = false;
+  document.getElementById('seatingNote').hidden = false;
   document.getElementById('musicForm').hidden = false;
 
   // Inicializiraj sedežni red

@@ -1018,6 +1018,15 @@ input, select, textarea { font: inherit; }
   min-height: 400px;
 }
 
+.seating-note {
+  text-align: center;
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 1rem;
+  opacity: 0.8;
+}
+
 /* SVG seat styles */
 .seat-empty {
   fill: #4CAF50;
