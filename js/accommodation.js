@@ -1,6 +1,7 @@
 /* ==========================================
    ACCOMMODATION.JS — Rezervacija prenočišča
    Resort Jasna, Kranjska Gora
+   Fiksni datum: 16.→17. maj 2026
    ========================================== */
 
 (function initAccommodation() {
@@ -13,17 +14,9 @@
     e.preventDefault();
 
     var guestName = localStorage.getItem('guestName') || 'Gost';
-    var checkin = document.getElementById('accCheckin').value;
-    var checkout = document.getElementById('accCheckout').value;
     var roomType = document.getElementById('accRoomType').value;
     var guests = document.getElementById('accGuests').value;
     var notes = document.getElementById('accNotes').value;
-
-    // Validacija: checkout mora biti po checkin
-    if (checkout <= checkin) {
-      showToast('Datum odhoda mora biti po datumu prihoda!', 'error');
-      return;
-    }
 
     // Prikaži loading
     submitBtn.disabled = true;
@@ -35,8 +28,8 @@
     var data = {
       type: 'accommodation',
       name: guestName,
-      checkin: checkin,
-      checkout: checkout,
+      checkin: '2026-05-16',
+      checkout: '2026-05-17',
       roomType: roomType,
       guests: guests,
       notes: notes
