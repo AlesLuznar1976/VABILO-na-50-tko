@@ -29,7 +29,7 @@
       <ul class="nav__links" id="navLinks">
         <li><a href="#vabilo">Vabilo</a></li>
         <li><a href="#rsvp">RSVP</a></li>
-        <li><a href="#sedezni-red" class="nav__locked" id="navSeating">Sedežni red</a></li>
+        <li><a href="#prenocisce" class="nav__locked" id="navAccommodation">Prenočišče</a></li>
         <li><a href="#glasba" class="nav__locked" id="navMusic">Glasba</a></li>
         <li><a href="#podrobnosti">Podrobnosti</a></li>
       </ul>
@@ -187,69 +187,99 @@
         <div class="rsvp-success__icon">🎉</div>
         <h3 class="rsvp-success__title">Hvala za potrditev!</h3>
         <p class="rsvp-success__text" id="rsvpSuccessName"></p>
-        <p class="rsvp-success__text">Zdaj lahko izbereš svoj sedež in glasbene želje.</p>
+        <p class="rsvp-success__text">Zdaj lahko rezerviraš prenočišče in izbereš glasbo.</p>
         <div class="rsvp-success__actions">
-          <a href="#sedezni-red" class="btn btn--primary">Izberi sedež</a>
+          <a href="#prenocisce" class="btn btn--primary">Rezerviraj prenočišče</a>
           <a href="#glasba" class="btn btn--outline">Izberi glasbo</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ SEKCIJA 3: SEDEŽNI RED ============ -->
-  <section class="section section--seating" id="sedezni-red">
+  <!-- ============ SEKCIJA 3: PRENOČIŠČE ============ -->
+  <section class="section section--accommodation" id="prenocisce">
     <div class="container">
       <div class="section__header">
-        <h2 class="section__title">Izberi svoj sedež</h2>
-        <p class="section__subtitle" id="seatingStatus">Klikni na prazen sedež, da ga rezerviraš.</p>
+        <h2 class="section__title">Brezplačno prenočišče</h2>
+        <p class="section__subtitle">Rezerviraj si brezplačno prenočišče v Resort Jasna — naš poklon vsem gostom!</p>
       </div>
 
       <!-- Zaklenjeno sporočilo -->
-      <div class="locked-overlay" id="seatingLocked">
+      <div class="locked-overlay" id="accommodationLocked">
         <div class="locked-overlay__content">
           <span class="locked-overlay__icon">🔒</span>
-          <p class="locked-overlay__text">Najprej potrdi udeležbo, da odklenješ sedežni red.</p>
+          <p class="locked-overlay__text">Najprej potrdi udeležbo, da odklenješ rezervacijo prenočišča.</p>
           <a href="#rsvp" class="btn btn--outline">Potrdi udeležbo</a>
         </div>
       </div>
 
-      <!-- Legenda -->
-      <div class="seating-legend" id="seatingLegend" hidden>
-        <div class="seating-legend__item">
-          <span class="legend-dot legend-dot--empty"></span>
-          <span>Prosto</span>
-        </div>
-        <div class="seating-legend__item">
-          <span class="legend-dot legend-dot--selected"></span>
-          <span>Izbrano</span>
-        </div>
-        <div class="seating-legend__item">
-          <span class="legend-dot legend-dot--taken"></span>
-          <span>Zasedeno</span>
-        </div>
-        <div class="seating-legend__item">
-          <span class="legend-dot legend-dot--mine"></span>
-          <span>Tvoj sedež</span>
-        </div>
-      </div>
-
-      <!-- SVG sedežni red -->
-      <div class="seating-chart" id="seatingChart" hidden>
-        <svg id="seatingSvg" viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg"></svg>
-      </div>
-
-      <p class="seating-note" id="seatingNote" hidden>Sedežni red se lahko še naknadno spremeni.</p>
-
-      <!-- Potrditveni modal -->
-      <div class="modal" id="seatModal">
-        <div class="modal__backdrop"></div>
-        <div class="modal__content">
-          <h3 class="modal__title">Potrdi izbiro sedeža</h3>
-          <p class="modal__text" id="seatModalText"></p>
-          <div class="modal__actions">
-            <button class="btn btn--primary" id="seatConfirm">Potrdi</button>
-            <button class="btn btn--outline" id="seatCancel">Prekliči</button>
+      <div class="accommodation-content" id="accommodationContent" hidden>
+        <div class="accommodation-info">
+          <div class="accommodation-card">
+            <div class="accommodation-card__image">
+              <img src="images/jezero-jasna.jpg" alt="Resort Jasna ob Jezeru Jasna" loading="lazy">
+            </div>
+            <div class="accommodation-card__body">
+              <h3 class="accommodation-card__title">Resort Jasna</h3>
+              <p class="accommodation-card__text">Uživajte v udobju Resorta Jasna, tik ob prelepi Jezeru Jasna v Kranjski Gori. Prenočišče je brezplačno za vse goste zabave.</p>
+              <ul class="accommodation-card__features">
+                <li>🏔️ Pogled na Julijske Alpe</li>
+                <li>🛏️ Udobne sobe</li>
+                <li>🅿️ Brezplačno parkiranje</li>
+                <li>☕ Zajtrk vključen</li>
+              </ul>
+            </div>
           </div>
+        </div>
+
+        <form class="accommodation-form" id="accommodationForm" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="accCheckin" class="form-label">Datum prihoda *</label>
+              <select id="accCheckin" name="accCheckin" class="form-input form-select" required>
+                <option value="2026-05-15">Petek, 15. maj 2026</option>
+                <option value="2026-05-16" selected>Sobota, 16. maj 2026</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="accCheckout" class="form-label">Datum odhoda *</label>
+              <select id="accCheckout" name="accCheckout" class="form-input form-select" required>
+                <option value="2026-05-17" selected>Nedelja, 17. maj 2026</option>
+                <option value="2026-05-18">Ponedeljek, 18. maj 2026</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="accRoomType" class="form-label">Tip sobe *</label>
+              <select id="accRoomType" name="accRoomType" class="form-input form-select" required>
+                <option value="single">Enoposteljna soba</option>
+                <option value="double" selected>Dvoposteljna soba</option>
+                <option value="family">Družinska soba (3-4 osebe)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="accGuests" class="form-label">Število gostov *</label>
+              <select id="accGuests" name="accGuests" class="form-input form-select" required>
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top: 1.25rem;">
+            <label for="accNotes" class="form-label">Posebne želje</label>
+            <input type="text" id="accNotes" name="accNotes" class="form-input" placeholder="Dodatna postelja, visoki nadstropje...">
+          </div>
+          <button type="submit" class="btn btn--primary btn--submit" id="accSubmit" style="margin-top: 1.5rem;">
+            <span class="btn__text">Rezerviraj prenočišče</span>
+            <span class="btn__spinner" hidden></span>
+          </button>
+        </form>
+
+        <div class="accommodation-success" id="accommodationSuccess" hidden>
+          <div class="rsvp-success__icon">🏨</div>
+          <h3 class="rsvp-success__title">Prenočišče rezervirano!</h3>
+          <p class="rsvp-success__text">Hvala! Potrditev rezervacije boš prejel/a po e-pošti.</p>
         </div>
       </div>
     </div>
@@ -383,7 +413,7 @@
   <script src="js/app.js"></script>
   <script src="js/confetti.js"></script>
   <script src="js/rsvp.js"></script>
-  <script src="js/seating.js"></script>
+  <script src="js/accommodation.js"></script>
   <script src="js/music.js"></script>
   <script src="js/contact.js"></script>
 </body>

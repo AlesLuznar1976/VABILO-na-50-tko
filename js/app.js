@@ -130,27 +130,20 @@ function unlockSections() {
   CONFIG.isRsvpCompleted = true;
 
   // Odkleni navigacijo
-  var navSeating = document.getElementById('navSeating');
+  var navAccommodation = document.getElementById('navAccommodation');
   var navMusic = document.getElementById('navMusic');
-  navSeating.classList.add('nav__unlocked');
+  navAccommodation.classList.add('nav__unlocked');
   navMusic.classList.add('nav__unlocked');
 
   // Skrij zaklenjene overlayre
-  var seatingLocked = document.getElementById('seatingLocked');
+  var accommodationLocked = document.getElementById('accommodationLocked');
   var musicLocked = document.getElementById('musicLocked');
-  seatingLocked.hidden = true;
+  accommodationLocked.hidden = true;
   musicLocked.hidden = true;
 
   // Prikaži vsebino
-  document.getElementById('seatingLegend').hidden = false;
-  document.getElementById('seatingChart').hidden = false;
-  document.getElementById('seatingNote').hidden = false;
+  document.getElementById('accommodationContent').hidden = false;
   document.getElementById('musicForm').hidden = false;
-
-  // Inicializiraj sedežni red
-  if (typeof initSeatingChart === 'function') {
-    initSeatingChart();
-  }
 
   // Inicializiraj glasbo
   if (typeof initMusicForm === 'function') {
@@ -206,18 +199,18 @@ function resetPage() {
     if (spremljevalciList) spremljevalciList.innerHTML = '';
 
     // Zakleni sekcije nazaj
-    var navSeating = document.getElementById('navSeating');
+    var navAccommodation = document.getElementById('navAccommodation');
     var navMusic = document.getElementById('navMusic');
-    if (navSeating) navSeating.classList.remove('nav__unlocked');
+    if (navAccommodation) navAccommodation.classList.remove('nav__unlocked');
     if (navMusic) navMusic.classList.remove('nav__unlocked');
 
-    var seatingLocked = document.getElementById('seatingLocked');
+    var accommodationLocked = document.getElementById('accommodationLocked');
     var musicLocked = document.getElementById('musicLocked');
-    if (seatingLocked) seatingLocked.hidden = false;
+    if (accommodationLocked) accommodationLocked.hidden = false;
     if (musicLocked) musicLocked.hidden = false;
 
-    document.getElementById('seatingLegend').hidden = true;
-    document.getElementById('seatingChart').hidden = true;
+    var accommodationContent = document.getElementById('accommodationContent');
+    if (accommodationContent) accommodationContent.hidden = true;
     document.getElementById('musicForm').hidden = true;
 
     // Ponastavi glasbo

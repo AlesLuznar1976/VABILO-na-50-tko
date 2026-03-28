@@ -955,148 +955,80 @@ input, select, textarea { font: inherit; }
 /* ==========================================
    SEATING CHART
    ========================================== */
-.section--seating {
+/* ==========================================
+   PRENOČIŠČE / ACCOMMODATION
+   ========================================== */
+.section--accommodation {
   background: var(--color-bg-alt);
 }
 
-.seating-legend {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.seating-legend__item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.legend-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid;
-}
-
-.legend-dot--empty {
-  background: #4CAF50;
-  border-color: #388E3C;
-}
-
-.legend-dot--selected {
-  background: #E67E22;
-  border-color: #D35400;
-}
-
-.legend-dot--taken {
-  background: #9E9E9E;
-  border-color: #757575;
-}
-
-.legend-dot--mine {
-  background: #D4AF37;
-  border-color: #B8860B;
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
-}
-
-.seating-chart {
+.accommodation-card {
   background: var(--color-white);
   border-radius: var(--radius-xl);
-  padding: 1.5rem;
+  overflow: hidden;
   box-shadow: var(--shadow-md);
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  margin-bottom: 2rem;
 }
 
-#seatingSvg {
+.accommodation-card__image {
   width: 100%;
-  height: auto;
-  min-height: 400px;
+  height: 280px;
+  overflow: hidden;
 }
 
-.seating-note {
-  text-align: center;
+.accommodation-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.accommodation-card:hover .accommodation-card__image img {
+  transform: scale(1.05);
+}
+
+.accommodation-card__body {
+  padding: 2rem;
+}
+
+.accommodation-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+}
+
+.accommodation-card__text {
   color: var(--color-text-light);
-  font-size: 0.9rem;
-  font-style: italic;
-  margin-top: 1rem;
-  opacity: 0.8;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
 }
 
-/* SVG seat styles */
-.seat-empty {
-  fill: #4CAF50;
-  stroke: #388E3C;
-  stroke-width: 2;
-  cursor: pointer;
-  transition: fill 0.2s, transform 0.2s;
+.accommodation-card__features {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
 }
 
-.seat-empty:hover {
-  fill: #D4AF37;
-  stroke: #C9A84C;
-  transform-origin: center;
-  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.6));
+.accommodation-card__features li {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text);
+  padding: 0.5rem 0;
 }
 
-.seat-taken {
-  fill: #78909C;
-  stroke: #546E7A;
-  stroke-width: 2;
-  cursor: default;
-  opacity: 0.85;
+.accommodation-form {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
 }
 
-.seat-selected {
-  fill: #E67E22;
-  stroke: #D35400;
-  stroke-width: 3;
-  cursor: pointer;
-  filter: drop-shadow(0 0 6px rgba(230, 126, 34, 0.5));
-  animation: seatPulse 2s ease-in-out infinite;
-}
-
-.seat-mine {
-  fill: #D4AF37;
-  stroke: #B8860B;
-  stroke-width: 3;
-  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
-  animation: seatPulse 2s ease-in-out infinite;
-}
-
-@keyframes seatPulse {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5)); }
-  50% { filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.8)); }
-}
-
-.table-circle {
-  fill: var(--color-bg-alt);
-  stroke: var(--color-purple-light);
-  stroke-width: 2;
-}
-
-.table-label {
-  font-family: 'Baloo 2', cursive;
-  font-size: 14px;
-  font-weight: 700;
-  fill: var(--color-purple);
-  text-anchor: middle;
-  dominant-baseline: central;
-  pointer-events: none;
-}
-
-.seat-label {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 7px;
-  font-weight: 700;
-  fill: #FFFFFF;
-  text-anchor: middle;
-  dominant-baseline: central;
-  pointer-events: none;
+.accommodation-success {
+  text-align: center;
+  padding: 2rem;
 }
 
 /* ==========================================
