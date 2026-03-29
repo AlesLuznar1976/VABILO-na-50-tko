@@ -352,15 +352,55 @@ window.addEventListener('DOMContentLoaded', function () {
   }
 })();
 
-// ===== POVZETEK EMAIL — pošlje se ko so vse sekcije izpolnjene =====
+// ===== POVZETEK EMAIL =====
+// Pošlje se ko so vse sekcije izpolnjene, ALI po 10 min od prve oddaje
+
+var _summaryTimerId = null;
+
 function checkAndSendSummary() {
+  if (localStorage.getItem('summarySent')) return;
+
   var rsvpDone = localStorage.getItem('rsvpDone');
   var accDone = localStorage.getItem('accDone');
   var musicDone = localStorage.getItem('musicDone');
-  var summaryAlreadySent = localStorage.getItem('summarySent');
 
-  // Pošlji samo ko so vse 3 sekcije izpolnjene in še ni bilo poslano
-  if (!rsvpDone || !accDone || !musicDone || summaryAlreadySent) return;
+  // Vsaj ena sekcija mora biti izpolnjena
+  if (!rsvpDone && !accDone && !musicDone) return;
+
+  // Če so vse 3 izpolnjene — pošlji takoj
+  if (rsvpDone && accDone && musicDone) {
+    if (_summaryTimerId) { clearTimeout(_summaryTimerId); _summaryTimerId = null; }
+    sendSummaryEmail();
+    return;
+  }
+
+  // Zaženi 10-minutni timer ob prvi oddaji (če še ne teče)
+  if (!_summaryTimerId && !localStorage.getItem('summaryTimerStart')) {
+    localStorage.setItem('summaryTimerStart', Date.now().toString());
+  }
+
+  // Preveri ali je timer že potekel (če se je stran medtem osvežila)
+  var timerStart = parseInt(localStorage.getItem('summaryTimerStart') || '0', 10);
+  var elapsed = Date.now() - timerStart;
+  var remaining = Math.max(0, 10 * 60 * 1000 - elapsed); // 10 min
+
+  if (remaining <= 0) {
+    sendSummaryEmail();
+    return;
+  }
+
+  // Nastavi timeout za preostanek časa
+  if (_summaryTimerId) clearTimeout(_summaryTimerId);
+  _summaryTimerId = setTimeout(function () {
+    if (!localStorage.getItem('summarySent')) {
+      sendSummaryEmail();
+    }
+  }, remaining);
+}
+
+function sendSummaryEmail() {
+  if (localStorage.getItem('summarySent')) return;
+  localStorage.setItem('summarySent', 'true');
 
   var rsvp = {};
   var acc = {};
@@ -370,7 +410,14 @@ function checkAndSendSummary() {
   try { acc = JSON.parse(localStorage.getItem('accData') || '{}'); } catch(e) {}
   try { music = JSON.parse(localStorage.getItem('musicData') || '{}'); } catch(e) {}
 
+  var rsvpDone = localStorage.getItem('rsvpDone');
+  var accDone = localStorage.getItem('accDone');
+  var musicDone = localStorage.getItem('musicDone');
+  var allDone = rsvpDone && accDone && musicDone;
+
   var fullName = (rsvp.ime || '') + ' ' + (rsvp.priimek || '');
+  if (!fullName.trim()) fullName = localStorage.getItem('guestName') || 'Gost';
+
   var genreLabels = {
     '80ta': '80-ta', '90-00': '90-00', 'jugo': 'Jugo zabavna',
     'narodno': 'Narodno zabavna', 'slovenska': 'Slovenska',
@@ -378,23 +425,40 @@ function checkAndSendSummary() {
   };
   var zanriText = (music.zanri || []).map(function(z) { return genreLabels[z] || z; }).join(', ');
 
-  var summary = '=== POVZETEK PRIJAVE ===\n\n' +
-    '--- UDELEŽBA ---\n' +
-    'Ime: ' + fullName + '\n' +
-    'Telefon: ' + (rsvp.telefon || '/') + '\n' +
-    'Število oseb: ' + (rsvp.stOseb || '1') + '\n' +
-    (rsvp.spremljevalci ? 'Spremljevalci: ' + rsvp.spremljevalci + '\n' : '') +
-    (rsvp.prehrana ? 'Prehrana: ' + rsvp.prehrana + '\n' : '') +
-    '\n--- PRENOČIŠČE ---\n' +
-    'Datum: Sobota 16. → Nedelja 17. maj 2026\n' +
-    'Število gostov: ' + (acc.guests || '/') + '\n' +
-    (acc.notes ? 'Posebne želje: ' + acc.notes + '\n' : '') +
-    '\n--- GLASBA ---\n' +
-    'Zvrsti: ' + (zanriText || '/') + '\n' +
-    (music.lastnaZelja ? 'Lastna želja: ' + music.lastnaZelja + '\n' : '') +
-    '\nČas prijave: ' + new Date().toLocaleString('sl-SI');
+  var summary = '=== POVZETEK PRIJAVE' + (allDone ? '' : ' (DELNI)') + ' ===\n\n';
 
-  // Pošlji email
+  if (rsvpDone) {
+    summary += '--- UDELEŽBA ---\n' +
+      'Ime: ' + fullName + '\n' +
+      'Telefon: ' + (rsvp.telefon || '/') + '\n' +
+      'Število oseb: ' + (rsvp.stOseb || '1') + '\n' +
+      (rsvp.spremljevalci ? 'Spremljevalci: ' + rsvp.spremljevalci + '\n' : '') +
+      (rsvp.prehrana ? 'Prehrana: ' + rsvp.prehrana + '\n' : '') + '\n';
+  } else {
+    summary += '--- UDELEŽBA ---\n(ni izpolnjeno)\n\n';
+  }
+
+  if (accDone) {
+    summary += '--- PRENOČIŠČE ---\n' +
+      'Datum: Sobota 16. → Nedelja 17. maj 2026\n' +
+      'Število gostov: ' + (acc.guests || '/') + '\n' +
+      (acc.notes ? 'Posebne želje: ' + acc.notes + '\n' : '') + '\n';
+  } else {
+    summary += '--- PRENOČIŠČE ---\n(ni izpolnjeno)\n\n';
+  }
+
+  if (musicDone) {
+    summary += '--- GLASBA ---\n' +
+      'Zvrsti: ' + (zanriText || '/') + '\n' +
+      (music.lastnaZelja ? 'Lastna želja: ' + music.lastnaZelja + '\n' : '') + '\n';
+  } else {
+    summary += '--- GLASBA ---\n(ni izpolnjeno)\n\n';
+  }
+
+  summary += 'Čas prijave: ' + new Date().toLocaleString('sl-SI');
+
+  var statusLabel = allDone ? 'POVZETEK' : 'DELNI POVZETEK';
+
   fetch('https://formsubmit.co/ajax/ales@luznar.com', {
     method: 'POST',
     headers: {
@@ -402,7 +466,7 @@ function checkAndSendSummary() {
       'Accept': 'application/json'
     },
     body: JSON.stringify({
-      _subject: 'Vabilo 50-tka: POVZETEK — ' + fullName,
+      _subject: 'Vabilo 50-tka: ' + statusLabel + ' — ' + fullName,
       name: fullName,
       message: summary
     })
@@ -410,13 +474,17 @@ function checkAndSendSummary() {
     return r.json();
   }).then(function(data) {
     if (data.success) {
-      localStorage.setItem('summarySent', 'true');
       showToast('Povzetek poslan organizatorju!', 'success');
     }
   }).catch(function () {
     console.log('Summary email failed (non-critical)');
   });
-
-  // Označi kot poslano tudi če API ne vrne success (demo mode)
-  localStorage.setItem('summarySent', 'true');
 }
+
+// Ob nalaganju strani preveri ali timer že teče (osvežitev strani)
+(function checkTimerOnLoad() {
+  var timerStart = localStorage.getItem('summaryTimerStart');
+  if (timerStart && !localStorage.getItem('summarySent')) {
+    checkAndSendSummary();
+  }
+})();
