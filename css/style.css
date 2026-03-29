@@ -300,6 +300,31 @@ input, select, textarea { font: inherit; }
   max-width: 50rem;
 }
 
+.hero__headline {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.8s ease both;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+
+.hero__headline-accent {
+  background: linear-gradient(135deg, #D4AF37, #F0D060, #C9A84C, #D4AF37);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  display: block;
+  margin-top: 0.25rem;
+}
+
 .hero__badge {
   display: inline-block;
   padding: 0.4rem 1.5rem;
