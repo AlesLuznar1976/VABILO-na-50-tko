@@ -302,27 +302,64 @@ input, select, textarea { font: inherit; }
 
 .hero__headline {
   font-family: var(--font-heading);
-  font-size: clamp(1.8rem, 5vw, 3rem);
   font-weight: 800;
-  color: #FFFFFF;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  line-height: 1.2;
-  margin-bottom: 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
   animation: fadeInUp 0.8s ease both;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  position: relative;
+  padding: 1.5rem 2rem;
+}
+
+.hero__headline::before,
+.hero__headline::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 2px;
+  width: clamp(120px, 40%, 300px);
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+}
+
+.hero__headline::before {
+  top: 0;
+}
+
+.hero__headline::after {
+  bottom: 0;
+}
+
+.hero__headline-sub {
+  display: block;
+  font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
 }
 
 .hero__headline-accent {
-  background: linear-gradient(135deg, #D4AF37, #F0D060, #C9A84C, #D4AF37);
-  background-size: 200% auto;
+  display: block;
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  line-height: 1.1;
+  background: linear-gradient(135deg, #C9A84C 0%, #F0D060 25%, #D4AF37 50%, #F5E08A 75%, #D4AF37 100%);
+  background-size: 300% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmer 4s linear infinite;
-  font-size: clamp(2.2rem, 6vw, 4rem);
+  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.3));
+}
+
+.hero__headline-year {
   display: block;
-  margin-top: 0.25rem;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.2em;
+  margin-top: 0.5rem;
+  font-weight: 400;
 }
 
 .hero__badge {
