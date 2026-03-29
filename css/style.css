@@ -42,6 +42,11 @@
   --nav-height: 4rem;
 }
 
+/* ---------- Force Light Mode ---------- */
+:root {
+  color-scheme: light only;
+}
+
 /* ---------- Reset & Base ---------- */
 *, *::before, *::after {
   margin: 0;
