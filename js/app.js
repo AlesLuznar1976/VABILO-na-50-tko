@@ -8,7 +8,7 @@ const CONFIG = {
   APPS_SCRIPT_URL: 'YOUR_APPS_SCRIPT_URL_HERE',
 
   // Datum zabave
-  PARTY_DATE: new Date('2026-05-16T20:00:00+02:00'),
+  PARTY_DATE: new Date('2026-05-16T19:00:00+02:00'),
 
   // Stanje aplikacije
   isRsvpCompleted: false,
@@ -333,7 +333,7 @@ window.addEventListener('DOMContentLoaded', function () {
         'VERSION:2.0',
         'PRODID:-//Vabilo//50let//SL',
         'BEGIN:VEVENT',
-        'DTSTART:20260516T180000',
+        'DTSTART:20260516T170000',
         'DTEND:20260517T020000',
         'SUMMARY:Rojstnodnevna zabava - 50 let',
         'LOCATION:Jezero Jasna\\, Kranjska Gora',
