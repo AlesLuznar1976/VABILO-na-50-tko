@@ -1,6 +1,6 @@
 /* ==========================================
    ACCOMMODATION.JS — Rezervacija prenočišča
-   Resort Jasna, Kranjska Gora
+   Jezero Jasna, Kranjska Gora
    Fiksni datum: 16.→17. maj 2026
    ========================================== */
 
