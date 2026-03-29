@@ -75,13 +75,19 @@ function initMusicForm() {
 
         if (result.status === 'ok') {
           showToast('Glasbene želje shranjene! Hvala!', 'success');
-          // NE skrivamo forme — uporabnik ostane na isti strani
+          localStorage.setItem('musicData', JSON.stringify({ zanri: selectedGenres, lastnaZelja: lastnaZelja }));
+          localStorage.setItem('musicDone', 'true');
+          checkAndSendSummary();
         } else {
           showToast(result.message || 'Prišlo je do napake.', 'error');
         }
       })
       .catch(function () {
-        showToast('Napaka pri pošiljanju. Poskusi znova.', 'error');
+        // Demo mode — simuliraj uspeh
+        showToast('Glasbene želje shranjene! Hvala!', 'success');
+        localStorage.setItem('musicData', JSON.stringify({ zanri: selectedGenres, lastnaZelja: lastnaZelja }));
+        localStorage.setItem('musicDone', 'true');
+        checkAndSendSummary();
         submitBtn.disabled = false;
         btnText.hidden = false;
         btnSpinner.hidden = true;

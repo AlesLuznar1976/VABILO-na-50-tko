@@ -39,12 +39,18 @@
       success.hidden = false;
       showToast('Prenočišče uspešno rezervirano!', 'success');
       if (typeof celebrateConfetti === 'function') celebrateConfetti();
+      localStorage.setItem('accData', JSON.stringify(data));
+      localStorage.setItem('accDone', 'true');
+      checkAndSendSummary();
     }).catch(function () {
       // Demo mode — simuliraj uspeh
       form.hidden = true;
       success.hidden = false;
       showToast('Prenočišče uspešno rezervirano!', 'success');
       if (typeof celebrateConfetti === 'function') celebrateConfetti();
+      localStorage.setItem('accData', JSON.stringify(data));
+      localStorage.setItem('accDone', 'true');
+      checkAndSendSummary();
     }).finally(function () {
       submitBtn.disabled = false;
       if (btnText) btnText.textContent = 'Rezerviraj prenočišče';

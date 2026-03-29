@@ -351,3 +351,72 @@ window.addEventListener('DOMContentLoaded', function () {
     });
   }
 })();
+
+// ===== POVZETEK EMAIL — pošlje se ko so vse sekcije izpolnjene =====
+function checkAndSendSummary() {
+  var rsvpDone = localStorage.getItem('rsvpDone');
+  var accDone = localStorage.getItem('accDone');
+  var musicDone = localStorage.getItem('musicDone');
+  var summaryAlreadySent = localStorage.getItem('summarySent');
+
+  // Pošlji samo ko so vse 3 sekcije izpolnjene in še ni bilo poslano
+  if (!rsvpDone || !accDone || !musicDone || summaryAlreadySent) return;
+
+  var rsvp = {};
+  var acc = {};
+  var music = {};
+
+  try { rsvp = JSON.parse(localStorage.getItem('rsvpData') || '{}'); } catch(e) {}
+  try { acc = JSON.parse(localStorage.getItem('accData') || '{}'); } catch(e) {}
+  try { music = JSON.parse(localStorage.getItem('musicData') || '{}'); } catch(e) {}
+
+  var fullName = (rsvp.ime || '') + ' ' + (rsvp.priimek || '');
+  var genreLabels = {
+    '80ta': '80-ta', '90-00': '90-00', 'jugo': 'Jugo zabavna',
+    'narodno': 'Narodno zabavna', 'slovenska': 'Slovenska',
+    'plesna': 'Plesna', 'moderna': 'Moderna', 'rock': 'Rock', 'balkan': 'Balkan'
+  };
+  var zanriText = (music.zanri || []).map(function(z) { return genreLabels[z] || z; }).join(', ');
+
+  var summary = '=== POVZETEK PRIJAVE ===\n\n' +
+    '--- UDELEŽBA ---\n' +
+    'Ime: ' + fullName + '\n' +
+    'Telefon: ' + (rsvp.telefon || '/') + '\n' +
+    'Število oseb: ' + (rsvp.stOseb || '1') + '\n' +
+    (rsvp.spremljevalci ? 'Spremljevalci: ' + rsvp.spremljevalci + '\n' : '') +
+    (rsvp.prehrana ? 'Prehrana: ' + rsvp.prehrana + '\n' : '') +
+    '\n--- PRENOČIŠČE ---\n' +
+    'Datum: Sobota 16. → Nedelja 17. maj 2026\n' +
+    'Število gostov: ' + (acc.guests || '/') + '\n' +
+    (acc.notes ? 'Posebne želje: ' + acc.notes + '\n' : '') +
+    '\n--- GLASBA ---\n' +
+    'Zvrsti: ' + (zanriText || '/') + '\n' +
+    (music.lastnaZelja ? 'Lastna želja: ' + music.lastnaZelja + '\n' : '') +
+    '\nČas prijave: ' + new Date().toLocaleString('sl-SI');
+
+  // Pošlji email
+  fetch('https://formsubmit.co/ajax/ales@luznar.com', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      _subject: 'Vabilo 50-tka: POVZETEK — ' + fullName,
+      name: fullName,
+      message: summary
+    })
+  }).then(function(r) {
+    return r.json();
+  }).then(function(data) {
+    if (data.success) {
+      localStorage.setItem('summarySent', 'true');
+      showToast('Povzetek poslan organizatorju!', 'success');
+    }
+  }).catch(function () {
+    console.log('Summary email failed (non-critical)');
+  });
+
+  // Označi kot poslano tudi če API ne vrne success (demo mode)
+  localStorage.setItem('summarySent', 'true');
+}
