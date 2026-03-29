@@ -74,20 +74,14 @@ function initMusicForm() {
         btnSpinner.hidden = true;
 
         if (result.status === 'ok') {
-          showToast('Glasbene želje shranjene! Hvala!', 'success');
-          localStorage.setItem('musicData', JSON.stringify({ zanri: selectedGenres, lastnaZelja: lastnaZelja }));
-          localStorage.setItem('musicDone', 'true');
-          checkAndSendSummary();
+          musicSubmitSuccess(form, selectedGenres, lastnaZelja);
         } else {
           showToast(result.message || 'Prišlo je do napake.', 'error');
         }
       })
       .catch(function () {
         // Demo mode — simuliraj uspeh
-        showToast('Glasbene želje shranjene! Hvala!', 'success');
-        localStorage.setItem('musicData', JSON.stringify({ zanri: selectedGenres, lastnaZelja: lastnaZelja }));
-        localStorage.setItem('musicDone', 'true');
-        checkAndSendSummary();
+        musicSubmitSuccess(form, selectedGenres, lastnaZelja);
         submitBtn.disabled = false;
         btnText.hidden = false;
         btnSpinner.hidden = true;
@@ -127,4 +121,17 @@ function getCheckedValues(name) {
   var values = [];
   checked.forEach(function (el) { values.push(el.value); });
   return values;
+}
+
+function musicSubmitSuccess(form, selectedGenres, lastnaZelja) {
+  showToast('Glasbene želje shranjene! Hvala!', 'success');
+  localStorage.setItem('musicData', JSON.stringify({ zanri: selectedGenres, lastnaZelja: lastnaZelja }));
+  localStorage.setItem('musicDone', 'true');
+  checkAndSendSummary();
+  if (typeof celebrateConfetti === 'function') celebrateConfetti();
+
+  // Skrij obrazec, prikaži success
+  form.hidden = true;
+  var success = document.getElementById('musicSuccess');
+  if (success) success.hidden = false;
 }
