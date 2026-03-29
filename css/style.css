@@ -340,16 +340,36 @@ input, select, textarea { font: inherit; }
 }
 
 .hero__headline-accent {
-  display: block;
+  display: inline-block;
   font-size: clamp(2.5rem, 7vw, 4.5rem);
   line-height: 1.1;
-  background: linear-gradient(135deg, #C9A84C 0%, #F0D060 25%, #D4AF37 50%, #F5E08A 75%, #D4AF37 100%);
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shimmer 4s linear infinite;
-  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.3));
+  color: #D4AF37;
+  background-image: linear-gradient(
+    135deg,
+    #BF953F 0%,
+    #FCF6BA 15%,
+    #B38728 30%,
+    #FBF5B7 45%,
+    #AA771C 55%,
+    #D4AF37 60%,
+    #FCF6BA 70%,
+    #BF953F 80%,
+    #FBF5B7 90%,
+    #AA771C 100%
+  );
+  background-size: 400% auto;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  animation: goldShimmer 6s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(170, 119, 28, 0.5)) drop-shadow(0 0 20px rgba(212, 175, 55, 0.2));
+  text-shadow: none;
+}
+
+@keyframes goldShimmer {
+  0% { background-position: 0% center; }
+  50% { background-position: 200% center; }
+  100% { background-position: 400% center; }
 }
 
 .hero__headline-year {
