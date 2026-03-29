@@ -14,7 +14,6 @@
     e.preventDefault();
 
     var guestName = localStorage.getItem('guestName') || 'Gost';
-    var roomType = document.getElementById('accRoomType').value;
     var guests = document.getElementById('accGuests').value;
     var notes = document.getElementById('accNotes').value;
 
@@ -30,7 +29,6 @@
       name: guestName,
       checkin: '2026-05-16',
       checkout: '2026-05-17',
-      roomType: roomType,
       guests: guests,
       notes: notes
     };

@@ -130,6 +130,9 @@
 
           showToast('Hvala za potrditev, ' + fullName + '!', 'success');
 
+          // Pošlji email obvestilo na ales@luznar.com
+          sendEmailNotification(data, spremljevalci);
+
           if (data.udelezba === 'da') {
             unlockSections();
           }
@@ -154,4 +157,39 @@
       this.classList.remove('error');
     });
   });
+
+  // ---- Email obvestilo ----
+  function sendEmailNotification(data, spremljevalci) {
+    var fullName = data.ime + ' ' + data.priimek;
+    var status = data.udelezba === 'da' ? 'POTRJENA' : 'ODKLONJENA';
+    var message = 'RSVP ' + status + '\n\n' +
+      'Ime: ' + fullName + '\n' +
+      'Telefon: ' + (data.telefon || '/') + '\n' +
+      'Število oseb: ' + data.stOseb + '\n' +
+      (spremljevalci.length > 0 ? 'Spremljevalci: ' + spremljevalci.join(', ') + '\n' : '') +
+      (data.prehrana ? 'Prehrana: ' + data.prehrana + '\n' : '') +
+      '\nČas: ' + new Date().toLocaleString('sl-SI');
+
+    // Pošlji preko formsubmit.co (brezplačen email relay)
+    fetch('https://formsubmit.co/ajax/ales@luznar.com', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        _subject: 'Vabilo 50-tka: ' + status + ' — ' + fullName,
+        name: fullName,
+        phone: data.telefon || '/',
+        guests: data.stOseb,
+        companions: spremljevalci.join(', ') || '/',
+        dietary: data.prehrana || '/',
+        status: status,
+        message: message
+      })
+    }).catch(function () {
+      // Email ni kritičen — ignoriramo napake
+      console.log('Email notification failed (non-critical)');
+    });
+  }
 })();

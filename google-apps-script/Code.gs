@@ -143,6 +143,28 @@ function handleRsvp(data) {
     data.udelezba || 'da'
   ]);
 
+  // Pošlji email obvestilo
+  try {
+    var fullName = (data.ime || '') + ' ' + (data.priimek || '');
+    var status = data.udelezba === 'da' ? 'POTRJENA' : 'ODKLONJENA';
+    var subject = 'Vabilo 50-tka: ' + status + ' — ' + fullName;
+    var body = 'RSVP ' + status + '\n\n' +
+      'Ime: ' + fullName + '\n' +
+      'Telefon: ' + (data.telefon || '/') + '\n' +
+      'Število oseb: ' + (data.stOseb || 1) + '\n' +
+      (data.spremljevalci ? 'Spremljevalci: ' + data.spremljevalci + '\n' : '') +
+      (data.prehrana ? 'Prehrana: ' + data.prehrana + '\n' : '') +
+      '\nČas: ' + new Date().toLocaleString('sl-SI');
+
+    MailApp.sendEmail({
+      to: 'ales@luznar.com',
+      subject: subject,
+      body: body
+    });
+  } catch (err) {
+    Logger.log('RSVP email napaka: ' + err.message);
+  }
+
   return { status: 'ok', message: 'RSVP uspešno shranjeno!' };
 }
 
