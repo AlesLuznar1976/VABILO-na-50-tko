@@ -2,14 +2,18 @@
  * Google Apps Script — Backend za rojstnodnevna vabila
  *
  * NAVODILA ZA DEPLOY:
- * 1. Ustvari nov Google Sheet s 4 zavihki: "RSVP", "Seating", "Music", "Contact"
+ * 1. Ustvari nov Google Sheet s 5 zavihki: "RSVP", "Seating", "Music", "Accommodation", "Log"
  * 2. Odpri Extensions > Apps Script
  * 3. Prilepi to kodo
- * 4. Deploy > New deployment > Web app
+ * 4. Zaženi funkcijo addHeaders() za dodajanje glav stolpcev
+ * 5. Zaženi funkcijo createDailyTrigger() za nastavitev dnevnega emaila
+ * 6. Deploy > New deployment > Web app
  *    - Execute as: Me
  *    - Who has access: Anyone
- * 5. Kopiraj URL in ga vstavi v js/app.js kot APPS_SCRIPT_URL
+ * 7. Kopiraj URL in ga vstavi v js/app.js kot APPS_SCRIPT_URL
  */
+
+var NOTIFY_EMAIL = 'ales@luznar.com';
 
 // ==================== HEADERS ====================
 
@@ -17,24 +21,168 @@ function addHeaders() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
 
   var rsvp = ss.getSheetByName('RSVP');
+  if (!rsvp) rsvp = ss.insertSheet('RSVP');
   if (rsvp.getLastRow() === 0) {
     rsvp.appendRow(['Časovni žig', 'Ime', 'Priimek', 'Telefon', 'Št. oseb', 'Spremljevalci', 'Prehrana', 'Udeležba']);
   }
 
   var seating = ss.getSheetByName('Seating');
+  if (!seating) seating = ss.insertSheet('Seating');
   if (seating.getLastRow() === 0) {
     seating.appendRow(['Časovni žig', 'Ime gosta', 'Miza', 'Sedež']);
   }
 
   var music = ss.getSheetByName('Music');
+  if (!music) music = ss.insertSheet('Music');
   if (music.getLastRow() === 0) {
-    music.appendRow(['Časovni žig', 'Ime gosta', 'Žanri', 'Pesmi', 'Lastna želja']);
+    music.appendRow(['Časovni žig', 'Ime gosta', 'Žanri', 'Lastna želja']);
   }
 
-  var contact = ss.getSheetByName('Contact');
-  if (contact.getLastRow() === 0) {
-    contact.appendRow(['Časovni žig', 'Ime', 'Email', 'Sporočilo']);
+  var acc = ss.getSheetByName('Accommodation');
+  if (!acc) acc = ss.insertSheet('Accommodation');
+  if (acc.getLastRow() === 0) {
+    acc.appendRow(['Časovni žig', 'Ime gosta', 'Check-in', 'Check-out', 'Št. gostov']);
   }
+
+  var log = ss.getSheetByName('Log');
+  if (!log) log = ss.insertSheet('Log');
+  if (log.getLastRow() === 0) {
+    log.appendRow(['Časovni žig', 'Dogodek', 'Podrobnosti', 'Gost', 'Stran', 'Zaslon', 'User Agent']);
+  }
+}
+
+// ==================== DNEVNI TRIGGER ====================
+
+function createDailyTrigger() {
+  // Odstrani morebitne obstoječe triggerje
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'sendDailyLog') {
+      ScriptApp.deleteTrigger(triggers[i]);
+    }
+  }
+
+  // Ustvari nov dnevni trigger ob 8:00
+  ScriptApp.newTrigger('sendDailyLog')
+    .timeBased()
+    .everyDays(1)
+    .atHour(8)
+    .create();
+
+  Logger.log('Dnevni trigger ustvarjen — email vsak dan ob 8:00');
+}
+
+function sendDailyLog() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var now = new Date();
+  var yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+  // ===== ZBERI DNEVNE PODATKE =====
+  var sections = [];
+
+  // RSVP-ji
+  var rsvpSheet = ss.getSheetByName('RSVP');
+  if (rsvpSheet && rsvpSheet.getLastRow() > 1) {
+    var rsvpData = rsvpSheet.getDataRange().getValues();
+    var newRsvps = [];
+    for (var i = 1; i < rsvpData.length; i++) {
+      var ts = new Date(rsvpData[i][0]);
+      if (ts >= yesterday) {
+        newRsvps.push('  • ' + rsvpData[i][1] + ' ' + rsvpData[i][2] +
+          ' (' + rsvpData[i][4] + ' oseb) — ' + (rsvpData[i][7] === 'da' ? '✅ POTRJENO' : '❌ ODKLONENO'));
+      }
+    }
+    if (newRsvps.length > 0) {
+      sections.push('🎉 NOVI RSVP-ji (' + newRsvps.length + '):\n' + newRsvps.join('\n'));
+    }
+  }
+
+  // Prenočišča
+  var accSheet = ss.getSheetByName('Accommodation');
+  if (accSheet && accSheet.getLastRow() > 1) {
+    var accData = accSheet.getDataRange().getValues();
+    var newAcc = [];
+    for (var i = 1; i < accData.length; i++) {
+      var ts = new Date(accData[i][0]);
+      if (ts >= yesterday) {
+        newAcc.push('  • ' + accData[i][1] + ' (' + accData[i][4] + ' gostov)');
+      }
+    }
+    if (newAcc.length > 0) {
+      sections.push('🏨 NOVA PRENOČIŠČA (' + newAcc.length + '):\n' + newAcc.join('\n'));
+    }
+  }
+
+  // Glasba
+  var musicSheet = ss.getSheetByName('Music');
+  if (musicSheet && musicSheet.getLastRow() > 1) {
+    var musicData = musicSheet.getDataRange().getValues();
+    var newMusic = [];
+    for (var i = 1; i < musicData.length; i++) {
+      var ts = new Date(musicData[i][0]);
+      if (ts >= yesterday) {
+        newMusic.push('  • ' + musicData[i][1] + ': ' + musicData[i][2] +
+          (musicData[i][3] ? ' | Želja: ' + musicData[i][3] : ''));
+      }
+    }
+    if (newMusic.length > 0) {
+      sections.push('🎵 NOVE GLASBENE ŽELJE (' + newMusic.length + '):\n' + newMusic.join('\n'));
+    }
+  }
+
+  // Log statistika
+  var logSheet = ss.getSheetByName('Log');
+  if (logSheet && logSheet.getLastRow() > 1) {
+    var logData = logSheet.getDataRange().getValues();
+    var pageViews = 0;
+    var uniqueGuests = {};
+    var formSubmits = 0;
+    for (var i = 1; i < logData.length; i++) {
+      var ts = new Date(logData[i][0]);
+      if (ts >= yesterday) {
+        if (logData[i][1] === 'page_view') pageViews++;
+        if (logData[i][1] === 'form_submit') formSubmits++;
+        if (logData[i][3] && logData[i][3] !== 'Neznan') uniqueGuests[logData[i][3]] = true;
+      }
+    }
+    var guestCount = Object.keys(uniqueGuests).length;
+    if (pageViews > 0) {
+      sections.push('📊 STATISTIKA:\n' +
+        '  • Ogledov strani: ' + pageViews + '\n' +
+        '  • Unikatnih gostov: ' + guestCount + '\n' +
+        '  • Oddanih obrazcev: ' + formSubmits);
+    }
+  }
+
+  // Skupne številke
+  var totalRsvp = rsvpSheet ? Math.max(0, rsvpSheet.getLastRow() - 1) : 0;
+  var totalAcc = accSheet ? Math.max(0, accSheet.getLastRow() - 1) : 0;
+  var totalMusic = musicSheet ? Math.max(0, musicSheet.getLastRow() - 1) : 0;
+
+  sections.push('📋 SKUPNO STANJE:\n' +
+    '  • RSVP-jev: ' + totalRsvp + '\n' +
+    '  • Prenočišč: ' + totalAcc + '\n' +
+    '  • Glasbenih želja: ' + totalMusic);
+
+  // ===== POŠLJI EMAIL =====
+  if (sections.length === 0) return; // Nič novega
+
+  var subject = '📊 Dnevni povzetek — Aleševa 50-tka (' +
+    Utilities.formatDate(now, 'Europe/Ljubljana', 'dd.MM.yyyy') + ')';
+
+  var body = '🎂 DNEVNI POVZETEK — ALEŠEVA 50-TKA\n' +
+    Utilities.formatDate(now, 'Europe/Ljubljana', 'dd.MM.yyyy HH:mm') + '\n' +
+    '═══════════════════════════════════\n\n' +
+    sections.join('\n\n') + '\n\n' +
+    '───────────────────────────────────\n' +
+    'Avtomatski dnevni povzetek s spletne strani vabila.\n' +
+    'Google Sheet: ' + ss.getUrl();
+
+  MailApp.sendEmail({
+    to: NOTIFY_EMAIL,
+    subject: subject,
+    body: body
+  });
 }
 
 // ==================== GET ====================
@@ -69,7 +217,6 @@ function getSeating() {
   var data = sheet.getDataRange().getValues();
   var seats = [];
 
-  // Preskoči header vrstico
   for (var i = 1; i < data.length; i++) {
     seats.push({
       name: data[i][1],
@@ -84,7 +231,7 @@ function getSeating() {
 function getSeatingCount() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Seating');
-  var count = Math.max(0, sheet.getLastRow() - 1); // minus header
+  var count = Math.max(0, sheet.getLastRow() - 1);
   return { status: 'ok', count: count };
 }
 
@@ -103,7 +250,7 @@ function doPost(e) {
   var result;
 
   try {
-    switch (data.action) {
+    switch (data.action || data.type) {
       case 'rsvp':
         result = handleRsvp(data);
         break;
@@ -113,11 +260,14 @@ function doPost(e) {
       case 'music':
         result = handleMusic(data);
         break;
-      case 'contact':
-        result = handleContact(data);
+      case 'accommodation':
+        result = handleAccommodation(data);
+        break;
+      case 'log':
+        result = handleLog(data);
         break;
       default:
-        result = { status: 'error', message: 'Neznana akcija: ' + data.action };
+        result = { status: 'error', message: 'Neznana akcija: ' + (data.action || data.type) };
     }
   } catch (err) {
     result = { status: 'error', message: err.message };
@@ -147,7 +297,7 @@ function handleRsvp(data) {
   try {
     var fullName = (data.ime || '') + ' ' + (data.priimek || '');
     var status = data.udelezba === 'da' ? 'POTRJENA' : 'ODKLONJENA';
-    var subject = 'Vabilo 50-tka: ' + status + ' — ' + fullName;
+    var subject = '🎂 Vabilo 50-tka: ' + status + ' — ' + fullName;
     var body = 'RSVP ' + status + '\n\n' +
       'Ime: ' + fullName + '\n' +
       'Telefon: ' + (data.telefon || '/') + '\n' +
@@ -157,7 +307,7 @@ function handleRsvp(data) {
       '\nČas: ' + new Date().toLocaleString('sl-SI');
 
     MailApp.sendEmail({
-      to: 'ales@luznar.com',
+      to: NOTIFY_EMAIL,
       subject: subject,
       body: body
     });
@@ -172,7 +322,7 @@ function handleSeat(data) {
   var lock = LockService.getScriptLock();
 
   try {
-    lock.waitLock(10000); // čakaj do 10 sekund
+    lock.waitLock(10000);
   } catch (err) {
     return { status: 'error', message: 'Strežnik je zaseden, poskusi znova.' };
   }
@@ -182,14 +332,12 @@ function handleSeat(data) {
     var sheet = ss.getSheetByName('Seating');
     var allData = sheet.getDataRange().getValues();
 
-    // Preveri ali je sedež že zaseden
     for (var i = 1; i < allData.length; i++) {
       if (allData[i][2] == data.table && allData[i][3] == data.seat) {
         return { status: 'error', message: 'Ta sedež je žal že zaseden!' };
       }
     }
 
-    // Zapiši nov sedež
     sheet.appendRow([
       new Date(),
       data.name || '',
@@ -212,44 +360,59 @@ function handleMusic(data) {
     new Date(),
     data.name || '',
     (data.zanri || []).join(', '),
-    (data.pesmi || []).join(', '),
     data.lastnaZelja || ''
   ]);
 
   return { status: 'ok', message: 'Glasbene želje shranjene!' };
 }
 
-function handleContact(data) {
+function handleAccommodation(data) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName('Contact');
+  var sheet = ss.getSheetByName('Accommodation');
 
-  // Zapiši v sheet
   sheet.appendRow([
     new Date(),
     data.name || '',
-    data.email || '',
-    data.message || ''
+    data.checkin || '',
+    data.checkout || '',
+    data.guests || 1
   ]);
 
-  // Pošlji email gostitelju
+  // Pošlji email obvestilo
   try {
-    var subject = '🎂 Novo sporočilo od ' + (data.name || 'gost') + ' — Vabilo na 50-tko';
-    var body = 'Novo sporočilo prek spletnega vabila:\n\n' +
+    var subject = '🏨 Nova rezervacija prenočišča — ' + (data.name || 'Gost');
+    var body = 'NOVA REZERVACIJA PRENOČIŠČA\n\n' +
       'Ime: ' + (data.name || '/') + '\n' +
-      'Email: ' + (data.email || '/') + '\n' +
-      'Sporočilo:\n' + (data.message || '/') + '\n\n' +
-      '---\nPoslano s spletne strani vabila.';
+      'Check-in: ' + (data.checkin || '/') + '\n' +
+      'Check-out: ' + (data.checkout || '/') + '\n' +
+      'Število gostov: ' + (data.guests || 1) + '\n\n' +
+      'Čas: ' + new Date().toLocaleString('sl-SI');
 
     MailApp.sendEmail({
-      to: 'ales@luznar.com',
+      to: NOTIFY_EMAIL,
       subject: subject,
-      body: body,
-      replyTo: data.email || ''
+      body: body
     });
   } catch (err) {
-    // Email ni uspel, ampak sporočilo je shranjeno v sheetu
-    Logger.log('Email napaka: ' + err.message);
+    Logger.log('Accommodation email napaka: ' + err.message);
   }
 
-  return { status: 'ok', message: 'Sporočilo uspešno poslano!' };
+  return { status: 'ok', message: 'Prenočišče rezervirano!' };
+}
+
+function handleLog(data) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Log');
+
+  sheet.appendRow([
+    new Date(),
+    data.event || '',
+    data.details || '',
+    data.guest || '',
+    data.page || '',
+    data.screen || '',
+    data.userAgent || ''
+  ]);
+
+  return { status: 'ok' };
 }
