@@ -648,22 +648,36 @@ input, select, textarea { font: inherit; }
 /* Calendar dropdown */
 .calendar-dropdown {
   position: relative;
+  z-index: 100;
 }
 
 .calendar-dropdown__menu {
   display: none;
   position: absolute;
-  top: 100%;
+  bottom: calc(100% + 0.5rem);
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 0.5rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
   overflow: hidden;
   min-width: 200px;
-  z-index: 10;
+  z-index: 999;
+}
+
+@media (max-width: 768px) {
+  .calendar-dropdown__menu {
+    position: fixed;
+    bottom: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 250px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    border-radius: var(--radius-lg);
+  }
 }
 
 .calendar-dropdown__menu.is-open {

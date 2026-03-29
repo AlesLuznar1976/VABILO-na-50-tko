@@ -14,8 +14,8 @@
     e.preventDefault();
 
     var guestName = localStorage.getItem('guestName') || 'Gost';
-    var guests = document.getElementById('accGuests').value;
-    var notes = document.getElementById('accNotes').value;
+    var guestsEl = document.getElementById('accGuests');
+    var guests = guestsEl ? guestsEl.value : '1';
 
     // Prikaži loading
     submitBtn.disabled = true;
@@ -29,8 +29,7 @@
       name: guestName,
       checkin: '2026-05-16',
       checkout: '2026-05-17',
-      guests: guests,
-      notes: notes
+      guests: guests
     };
 
     // Pošlji na backend
