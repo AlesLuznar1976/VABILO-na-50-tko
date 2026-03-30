@@ -140,9 +140,11 @@
           // Shrani RSVP podatke za povzetek
           localStorage.setItem('rsvpData', JSON.stringify(data));
           localStorage.setItem('rsvpDone', 'true');
-          checkAndSendSummary();
 
-          if (data.udelezba === 'da') {
+          if (data.udelezba === 'ne') {
+            sendDeclineEmail(fullName || (data.ime + ' ' + data.priimek));
+          } else {
+            checkAndSendSummary();
             unlockSections();
           }
         } else {
@@ -168,7 +170,6 @@
         localStorage.setItem('rsvpDone', 'true');
 
         showToast('Hvala za potrditev, ' + fullName + '!', 'success');
-        checkAndSendSummary();
 
         form.hidden = true;
         var successDiv = document.getElementById('rsvpSuccess');
@@ -176,7 +177,10 @@
         var nameEl = successDiv ? successDiv.querySelector('.rsvp-success__text') : null;
         if (nameEl) nameEl.textContent = 'Potrjeno za: ' + fullName;
 
-        if (data.udelezba === 'da') {
+        if (data.udelezba === 'ne') {
+          sendDeclineEmail(fullName);
+        } else {
+          checkAndSendSummary();
           unlockSections();
         }
 

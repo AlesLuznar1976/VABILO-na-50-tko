@@ -419,6 +419,23 @@ function checkAndSendSummary() {
   }, remaining);
 }
 
+function sendDeclineEmail(fullName) {
+  localStorage.setItem('summarySent', 'true');
+  fetch('https://formsubmit.co/ajax/ales@luznar.com', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      _subject: '❌ NE PRIDE na zabavo: ' + fullName,
+      name: fullName,
+      message: '--- ODJAVA ---\n' +
+        fullName + ' je sporočil/a, da se NE BO udeležil/a zabave.\n\n' +
+        'Čas: ' + new Date().toLocaleString('sl-SI')
+    })
+  }).then(function(r) { return r.json(); })
+    .then(function(data) { console.log('Decline email response:', JSON.stringify(data)); })
+    .catch(function(err) { console.error('Decline email error:', err); });
+}
+
 function sendSummaryEmail() {
   if (localStorage.getItem('summarySent')) return;
   localStorage.setItem('summarySent', 'true');
