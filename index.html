@@ -252,13 +252,20 @@
                 <option value="2" selected>2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
               </select>
             </div>
           </div>
-          <button type="submit" class="btn btn--primary btn--submit" id="accSubmit" style="margin-top: 1.5rem;">
-            <span class="btn__text">Rezerviraj prenočišče</span>
-            <span class="btn__spinner" hidden></span>
-          </button>
+          <div style="display:flex; gap:1rem; margin-top:1.5rem; flex-wrap:wrap;">
+            <button type="submit" class="btn btn--primary btn--submit" id="accSubmit">
+              <span class="btn__text">Rezerviraj prenočišče</span>
+              <span class="btn__spinner" hidden></span>
+            </button>
+            <button type="button" class="btn btn--outline" id="accDecline">
+              Ne potrebujem prenočišča
+            </button>
+          </div>
         </form>
 
         <div class="accommodation-success" id="accommodationSuccess" hidden>

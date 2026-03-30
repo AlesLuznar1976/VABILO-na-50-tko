@@ -56,4 +56,26 @@
       if (btnSpinner) btnSpinner.hidden = true;
     });
   });
+
+  // Gumb "Ne potrebujem prenočišča"
+  var declineBtn = document.getElementById('accDecline');
+  if (declineBtn) {
+    declineBtn.addEventListener('click', function () {
+      localStorage.setItem('accDone', 'true');
+      localStorage.setItem('accData', JSON.stringify({ guests: 0, declined: true }));
+      form.hidden = true;
+      var successDiv = document.getElementById('accommodationSuccess');
+      if (successDiv) {
+        successDiv.hidden = false;
+        var icon = successDiv.querySelector('.rsvp-success__icon');
+        var title = successDiv.querySelector('.rsvp-success__title');
+        var text = successDiv.querySelector('.rsvp-success__text');
+        if (icon) icon.textContent = '👍';
+        if (title) title.textContent = 'Razumemo!';
+        if (text) text.textContent = 'Prenočišče ni potrebno — vidimo se na zabavi!';
+      }
+      showToast('Odgovor zabeležen. Hvala!', 'success');
+      checkAndSendSummary();
+    });
+  }
 })();
