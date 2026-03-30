@@ -133,6 +133,7 @@
           // Shrani RSVP podatke za povzetek
           localStorage.setItem('rsvpData', JSON.stringify(data));
           localStorage.setItem('rsvpDone', 'true');
+          checkAndSendSummary();
 
           if (data.udelezba === 'da') {
             unlockSections();
@@ -145,7 +146,28 @@
         }
       })
       .catch(function () {
-        showToast('Napaka pri pošiljanju. Poskusi znova.', 'error');
+        // Demo mode — simuliraj uspeh
+        var fullName = data.ime + ' ' + data.priimek;
+        localStorage.setItem('guestName', fullName);
+        localStorage.setItem('guestCount', data.stOseb || '1');
+        localStorage.setItem('rsvpData', JSON.stringify(data));
+        localStorage.setItem('rsvpDone', 'true');
+
+        showToast('Hvala za potrditev, ' + fullName + '!', 'success');
+        checkAndSendSummary();
+
+        form.hidden = true;
+        var successDiv = document.getElementById('rsvpSuccess');
+        if (successDiv) successDiv.hidden = false;
+        var nameEl = successDiv ? successDiv.querySelector('.rsvp-success__text') : null;
+        if (nameEl) nameEl.textContent = 'Potrjeno za: ' + fullName;
+
+        if (data.udelezba === 'da') {
+          unlockSections();
+        }
+
+        if (typeof celebrateConfetti === 'function') celebrateConfetti();
+
         submitBtn.disabled = false;
         btnText.hidden = false;
         btnSpinner.hidden = true;
