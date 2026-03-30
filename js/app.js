@@ -143,10 +143,31 @@ function unlockSections() {
 
   // Prikaži vsebino
   document.getElementById('accommodationContent').hidden = false;
-  document.getElementById('musicForm').hidden = false;
 
-  // Inicializiraj glasbo
-  if (typeof initMusicForm === 'function') {
+  // Pokaži formo ali success za prenočišče
+  var accForm = document.getElementById('accommodationForm');
+  var accSuccess = document.getElementById('accommodationSuccess');
+  if (localStorage.getItem('accDone')) {
+    if (accForm) accForm.hidden = true;
+    if (accSuccess) accSuccess.hidden = false;
+  } else {
+    if (accForm) accForm.hidden = false;
+    if (accSuccess) accSuccess.hidden = true;
+  }
+
+  // Pokaži formo ali success za glasbo
+  var musicForm = document.getElementById('musicForm');
+  var musicSuccess = document.getElementById('musicSuccess');
+  if (localStorage.getItem('musicDone')) {
+    if (musicForm) musicForm.hidden = true;
+    if (musicSuccess) musicSuccess.hidden = false;
+  } else {
+    if (musicForm) musicForm.hidden = false;
+    if (musicSuccess) musicSuccess.hidden = true;
+  }
+
+  // Inicializiraj glasbo (samo če ni že oddano)
+  if (!localStorage.getItem('musicDone') && typeof initMusicForm === 'function') {
     initMusicForm();
   }
 
