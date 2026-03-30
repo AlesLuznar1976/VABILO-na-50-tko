@@ -494,11 +494,14 @@ function sendSummaryEmail() {
   }).then(function(r) {
     return r.json();
   }).then(function(data) {
-    if (data.success) {
+    console.log('FormSubmit response:', JSON.stringify(data));
+    if (data.success === 'true' || data.success === true) {
       showToast('Povzetek poslan organizatorju!', 'success');
+    } else {
+      console.warn('FormSubmit ni uspel:', JSON.stringify(data));
     }
-  }).catch(function () {
-    console.log('Summary email failed (non-critical)');
+  }).catch(function (err) {
+    console.error('Summary email error:', err);
   });
 }
 

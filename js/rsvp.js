@@ -130,6 +130,13 @@
 
           showToast('Hvala za potrditev, ' + fullName + '!', 'success');
 
+          // Zbriši stare summary flage (nov gost = nov email)
+          localStorage.removeItem('summarySent');
+          localStorage.removeItem('summaryTimerStart');
+          localStorage.removeItem('accDone');
+          localStorage.removeItem('accData');
+          localStorage.removeItem('musicDone');
+          localStorage.removeItem('musicData');
           // Shrani RSVP podatke za povzetek
           localStorage.setItem('rsvpData', JSON.stringify(data));
           localStorage.setItem('rsvpDone', 'true');
@@ -150,6 +157,13 @@
         var fullName = data.ime + ' ' + data.priimek;
         localStorage.setItem('guestName', fullName);
         localStorage.setItem('guestCount', data.stOseb || '1');
+        // Zbriši stare summary flage (nov gost = nov email)
+        localStorage.removeItem('summarySent');
+        localStorage.removeItem('summaryTimerStart');
+        localStorage.removeItem('accDone');
+        localStorage.removeItem('accData');
+        localStorage.removeItem('musicDone');
+        localStorage.removeItem('musicData');
         localStorage.setItem('rsvpData', JSON.stringify(data));
         localStorage.setItem('rsvpDone', 'true');
 
