@@ -5,7 +5,7 @@
 // ===== KONFIGURACIJSKE KONSTANTE =====
 const CONFIG = {
   // POMEMBNO: Zamenjaj z URL-jem svojega Google Apps Script deployja
-  APPS_SCRIPT_URL: 'YOUR_APPS_SCRIPT_URL_HERE',
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbz6SzcAP1BQMAjFEqTb4wjhZbNWsRcaNcAzqAcsVaScyDkdHDAUDqr_qlWW-nCa1uQO/exec',
 
   // Datum zabave
   PARTY_DATE: new Date('2026-05-16T19:00:00+02:00'),

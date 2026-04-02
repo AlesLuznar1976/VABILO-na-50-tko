@@ -14,11 +14,12 @@
  */
 
 var NOTIFY_EMAIL = 'ales@luznar.com';
+var SHEET_ID = '1m_uzRYQVLfqZ0Sk5N55azOA6vwjlk3273LAo5dUR3nY';
 
 // ==================== HEADERS ====================
 
 function addHeaders() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SHEET_ID);
 
   var rsvp = ss.getSheetByName('RSVP');
   if (!rsvp) rsvp = ss.insertSheet('RSVP');
@@ -73,7 +74,7 @@ function createDailyTrigger() {
 }
 
 function sendDailyLog() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SHEET_ID);
   var now = new Date();
   var yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
@@ -212,7 +213,7 @@ function doGet(e) {
 }
 
 function getSeating() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SHEET_ID);
   var sheet = ss.getSheetByName('Seating');
   var data = sheet.getDataRange().getValues();
   var seats = [];
@@ -229,7 +230,7 @@ function getSeating() {
 }
 
 function getSeatingCount() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SHEET_ID);
   var sheet = ss.getSheetByName('Seating');
   var count = Math.max(0, sheet.getLastRow() - 1);
   return { status: 'ok', count: count };
@@ -279,7 +280,7 @@ function doPost(e) {
 }
 
 function handleRsvp(data) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SHEET_ID);
   var sheet = ss.getSheetByName('RSVP');
 
   sheet.appendRow([
@@ -328,7 +329,7 @@ function handleSeat(data) {
   }
 
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var ss = SpreadsheetApp.openById(SHEET_ID);
     var sheet = ss.getSheetByName('Seating');
     var allData = sheet.getDataRange().getValues();
 
@@ -353,7 +354,7 @@ function handleSeat(data) {
 }
 
 function handleMusic(data) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SHEET_ID);
   var sheet = ss.getSheetByName('Music');
 
   sheet.appendRow([
@@ -367,7 +368,7 @@ function handleMusic(data) {
 }
 
 function handleAccommodation(data) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SHEET_ID);
   var sheet = ss.getSheetByName('Accommodation');
 
   sheet.appendRow([
@@ -401,7 +402,7 @@ function handleAccommodation(data) {
 }
 
 function handleLog(data) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SHEET_ID);
   var sheet = ss.getSheetByName('Log');
 
   sheet.appendRow([
